@@ -1,0 +1,1 @@
+{"1":{"path":"Assets","id":1,"children":[3,7]},"3":{"path":"Assets\\Scripts","id":3,"parent":"1","children":[4,5]},"4":{"path":"Assets\\Scripts\\image.js","id":4,"parent":"3"},"5":{"path":"Assets\\Scripts\\transform.js","id":5,"parent":"3"},"7":{"path":"Assets\\Defs","id":7,"parent":"1","children":[8]},"8":{"path":"Assets\\Defs\\def.asset","id":8,"parent":"7"}}
