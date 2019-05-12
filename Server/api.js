@@ -188,6 +188,50 @@ document.game.api = {
 
         document.game.api.gameLoop();
     },
+    getComponent: function (go, componentName) {
+        for (var i = 0; i < go.components.length; ++i) {
+            if (go.components[i].instance.name === componentName) {
+                return go.components[i].instance;
+            }
+        }
+    },
+    render: function () {
+        function render(go) {
+            function loadImage(id) {
+                var img = new Image();
+                img.src = document.game.library[id].path;
+                img.onload = function () {
+                    document.game.library[id].image = img;
+                };
+            }
+
+            var imageComponent = document.game.api.getComponent(go, 'Image');
+            if (imageComponent) {
+                var fileId = imageComponent.params.image.value;
+
+                if (!document.game.library[fileId].image) {
+                    loadImage(fileId);
+                    return;
+                }
+
+                var pos = { x: 0, y: 0, z: 0 };
+                var transformComponent = document.game.api.getComponent(go, 'Transform');
+                if (transformComponent) {
+                    pos = transformComponent.getWorldPosition();
+                }
+                var image = document.game.library[fileId].image;
+                ctx.drawImage(image, pos.x, pos.y, 100, 100);
+            }
+
+            for (var i = 0; i < go.children.length; ++i) {
+                render(go.children[i]);
+            }
+        }
+
+        for (var i = 0; i < document.game.api.baseStructures.liveObjects.length; ++i) {
+            render(document.game.api.baseStructures.liveObjects[i]);
+        }
+    },
     gameLoop: function () {
         function getComponents(gameObject) {
             if (gameObject.children.length === 0) {
@@ -201,6 +245,8 @@ document.game.api = {
             }
             return res;
         }
+
+        document.game.api.render();
 
         var liveObjects = document.game.api.baseStructures.liveObjects;
         var components = [];

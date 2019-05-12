@@ -7,13 +7,7 @@ var ctx = c.getContext("2d");
 
 var gameHierarchy = [];
 
-function getComponent(go, componentName) {
-    for (var i = 0; i < go.components.length; ++i) {
-        if (go.components[i].instance.name === componentName) {
-            return go.components[i].instance;
-        }
-    }
-}
+
 
 function render(go) {
     var imageComponent = getComponent(go, 'Image');
