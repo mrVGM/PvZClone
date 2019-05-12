@@ -215,12 +215,22 @@ document.game.api = {
                 }
 
                 var pos = { x: 0, y: 0, z: 0 };
+                var rot = 0;
                 var transformComponent = document.game.api.getComponent(go, 'Transform');
                 if (transformComponent) {
                     pos = transformComponent.getWorldPosition();
+                    rot = transformComponent.params.rotation.value;
+                    rot = 2.0 * Math.PI * rot / 360.0;
                 }
                 var image = document.game.library[fileId].image;
-                ctx.drawImage(image, pos.x, pos.y, 100, 100);
+
+                var context = document.game.api.baseStructures.context;
+
+                context.translate(pos.x, pos.y);
+                context.rotate(rot);
+                context.drawImage(image, 0, 0, 100, 100);
+                context.rotate(-rot);
+                context.translate(-pos.x, -pos.y);
             }
 
             for (var i = 0; i < go.children.length; ++i) {
