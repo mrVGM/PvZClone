@@ -175,9 +175,52 @@ document.game.api = {
         }
         executeStart(prefab);
     },
+    lastTick: undefined,
+    lastFrame: 0,
     startGame: function () {
         var game = document.game;
         var prefab = game.library[game.gameSettings.scriptableObject.component.instance.params.initialPrefab.value];
         document.game.api.instantiate(prefab.prefabStr);
+
+        var d = new Date();
+        document.game.api.lastTick = d.getTime();
+        document.game.api.lastFrame = -1;
+
+        document.game.api.gameLoop();
+    },
+    gameLoop: function () {
+        function getComponents(gameObject) {
+            if (gameObject.children.length === 0) {
+                return gameObject.components;
+            }
+
+            var res = [];
+            res = res.concat(gameObject.components);
+            for (var i = 0; i < gameObject.children.length; ++i) {
+                res = res.concat(getComponents(gameObject.children[i]));
+            }
+            return res;
+        }
+
+        var liveObjects = document.game.api.baseStructures.liveObjects;
+        var components = [];
+        for (var i = 0; i < liveObjects.length; ++i) {
+            components = components.concat(getComponents(liveObjects[i]));
+        }
+
+        var date = new Date();
+        var time = date.getTime();
+        var dt = time - document.game.api.lastTick;
+        document.game.api.lastTick = time;
+        ++document.game.api.lastFrame;
+
+
+        for (var i = 0; i < components.length; ++i) {
+            if (components[i].instance.update) {
+                components[i].instance.update(dt);
+            }
+        }
+
+        setTimeout(document.game.api.gameLoop);
     }
 };

@@ -46,9 +46,6 @@ var transform = {
                 }
                 return res;
             },
-            start: function () {
-                console.log('Transform instantiated!');
-            }
         }
         return instance;
     },
