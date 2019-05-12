@@ -1,14 +1,18 @@
-document.game = {};
-
 var module = {};
 
 function onLoadLibrary(lib, callback) {
     lib = JSON.parse(lib);
+
+    if (!document.game) {
+        document.game = {};
+    }
+
     document.game.library = lib;
     document.game.scripts = {};
 
     var scriptIndeces = [];
     var assetIndeces = [];
+    var prefabIndeces = [];
 
     for (var fileEntry in lib) {
         var fe = lib[fileEntry];
@@ -20,9 +24,29 @@ function onLoadLibrary(lib, callback) {
         }
         if (ext[1] === 'js') {
             scriptIndeces.push(fe.id);
-        } else if (ext[1] === 'asset') {
+        }
+        else if (ext[1] === 'asset') {
             assetIndeces.push(fe.id);
         }
+        else if (ext[1] === 'prefab') {
+            prefabIndeces.push(fe.id);
+        }
+    }
+
+    var prefabIndex = 0;
+    function loadPrefabs() {
+        if (prefabIndex === prefabIndeces.length) {
+            console.log('ready');
+            document.game.api.startGame();
+            return;
+        }
+
+        var curPrefab = document.game.library[prefabIndeces[prefabIndex]];
+        loadJSON(curPrefab.path, function (json) {
+            curPrefab.prefabStr = json;
+            ++prefabIndex;
+            loadPrefabs();
+        });
     }
 
     var assetIndex = 0;
@@ -37,7 +61,7 @@ function onLoadLibrary(lib, callback) {
                 }
             }
 
-            console.log('ready');
+            loadPrefabs();
 
             return;
         }
@@ -83,4 +107,5 @@ function loadJSON(path, callback) {
 }
 
 console.log('Loading ...');
+
 loadJSON('library.json', onLoadLibrary);
