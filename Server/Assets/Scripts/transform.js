@@ -22,58 +22,46 @@ var transform = {
                     name: 'rotation',
                     type: 'number',
                     value: 0
-                }
+                },
+                scaleX: {
+                    name: 'Scale x',
+                    type: 'number',
+                    value: 1
+                },
+                scaleY: {
+                    name: 'Scale y',
+                    type: 'number',
+                    value: 1
+                },
             },
-            getLocalPosition: function () {
-                var res = { x: instance.params.x.value, y: instance.params.y.value, z: instance.params.z.value };
-                return res;
-            },
-            getWorldPosition: function () {
-                function getLocationInParent(tr) {
-                    var res = tr.instance.getLocalPosition();
-
-                    var parentTr = findParentTransform(tr);
-                    if (!parentTr) {
-                        return res;
-                    }
-
-                    var rot = 2.0 * Math.PI * parentTr.instance.params.rot / 360.0;
-                    var x = { x: Math.cos(rot), y: Math.sin(rot) };
-                    var y = { x: -x.y, y: x.x };
-
-                    res.x = res.x * x.x + res.y * y.x;
-                    res.y = res.x * x.y + res.y * y.y;
-
-                    return res;
-                }
-
-                function findParentTransform(tr) {
-                    var parent = tr.gameObject.parent;
-                    while (parent && !document.game.api.getComponent(parent, 'Transform')) {
-                        parent = parent.parent;
-                    }
-                    if (!parent) {
+            getWorldPosition: function (p) {
+                function findParentTransform(go) {
+                    if (!go) {
                         return;
                     }
-                    var parentTransform = document.game.api.getComponent(parent, 'Transform');
-                    return parentTransform;
+                    var tr = document.game.api.getComponent(go, 'Transform');
+                    if (tr) {
+                        return tr;
+                    }
+                    return findParentTransform(go.parent);
                 }
 
-                var res = instance.getLocalPosition();
-                var go = instance.gameObject.parent;
-                while (go) {
-                    for (var i = 0; i < go.components.length; ++i) {
-                        if (go.components[i].instance.name === 'Transform') {
-                            var loc = getLocationInParent(go.components[i]);
-                            res = {
-                                x: res.x + loc.x,
-                                y: res.y + loc.y,
-                                z: res.z + loc.z,
-                            };
-                            break;
-                        }
+                var m = document.game.api.math;
+
+                var curGo = instance.gameObject;
+
+                var res = p;
+
+                while (curGo) {
+                    var tr = findParentTransform(curGo);
+                    if (tr) {
+                        res = m.transform(tr, res);
+                        curGo = tr.gameObject.parent;
+                    } else {
+                        return res;
                     }
                 }
+
                 return res;
             },
         };

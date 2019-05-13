@@ -22,6 +22,16 @@ var transform = {
                     name: 'rotation',
                     type: 'number',
                     value: 0
+                },
+                scaleX: {
+                    name: 'scaleX',
+                    type: 'number',
+                    value: 1
+                },
+                scaleY: {
+                    name: 'scaleY',
+                    type: 'number',
+                    value: 1
                 }
             },
         }
