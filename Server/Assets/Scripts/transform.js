@@ -34,36 +34,38 @@ var transform = {
                     value: 1
                 },
             },
-            getWorldPosition: function (p) {
-                function findParentTransform(go) {
-                    if (!go) {
-                        return;
+            interface: {
+                getWorldPosition: function (p) {
+                    function findParentTransform(go) {
+                        if (!go) {
+                            return;
+                        }
+                        var tr = document.game.api.getComponent(go, 'Transform');
+                        if (tr) {
+                            return tr;
+                        }
+                        return findParentTransform(go.parent);
                     }
-                    var tr = document.game.api.getComponent(go, 'Transform');
-                    if (tr) {
-                        return tr;
+
+                    var m = document.game.api.math;
+
+                    var curGo = instance.gameObject;
+
+                    var res = p;
+
+                    while (curGo) {
+                        var tr = findParentTransform(curGo);
+                        if (tr) {
+                            res = m.transform(tr, res);
+                            curGo = tr.gameObject.parent;
+                        } else {
+                            return res;
+                        }
                     }
-                    return findParentTransform(go.parent);
-                }
 
-                var m = document.game.api.math;
-
-                var curGo = instance.gameObject;
-
-                var res = p;
-
-                while (curGo) {
-                    var tr = findParentTransform(curGo);
-                    if (tr) {
-                        res = m.transform(tr, res);
-                        curGo = tr.gameObject.parent;
-                    } else {
-                        return res;
-                    }
-                }
-
-                return res;
-            },
+                    return res;
+                },
+            }
         };
         return instance;
     },

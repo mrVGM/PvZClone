@@ -220,7 +220,7 @@ document.game.api.render = function () {
                 return;
             }
 
-            imageComponent.render();
+            imageComponent.interface.render();
         }
 
         for (var i = 0; i < go.children.length; ++i) {
