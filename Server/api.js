@@ -89,7 +89,7 @@ document.game.api.instantiate = function (prefabStr, parent) {
     function setComponents(go) {
         for (var i = 0; i < go.components.length; ++i) {
             var params = go.components[i].instance.params;
-            go.components[i].instance = scripts[go.components[i].script].createInstance();
+            go.components[i].instance = document.game.api.createInstance(scripts[go.components[i].script]);
             updateParams(go.components[i].instance.params, params);
             go.components[i].instance.gameObject = go;
         }
@@ -212,6 +212,7 @@ document.game.api.render = function () {
         }
 
         var imageComponent = document.game.api.getComponent(go, 'Image');
+        
         if (imageComponent) {
             var fileId = imageComponent.params.image.value;
 
@@ -220,7 +221,7 @@ document.game.api.render = function () {
                 return;
             }
 
-            imageComponent.interface.render();
+            imageComponent.interface.render(imageComponent);
         }
 
         for (var i = 0; i < go.children.length; ++i) {
@@ -269,4 +270,33 @@ document.game.api.gameLoop = function () {
     }
 
     setTimeout(document.game.api.gameLoop);
+};
+
+document.game.api.require = function (path) {
+    var lib = document.game.library;
+    for (var feId in lib) {
+        if (lib[feId].path === path) {
+            return document.game.scripts[feId];
+        }
+    }
+};
+
+document.game.api.createInstance = function (script) {
+    if (!script.extendsFrom) {
+        return script.createInstance();
+    }
+    var baseScript = document.game.api.require(script.extendsFrom);
+    var baseInstance = document.game.api.createInstance(baseScript);
+    var instance = script.createInstance();
+
+    //baseInstance.name = instance.name;
+
+    for (var p in instance.params) {
+        baseInstance.params[p] = instance.params[p];
+    }
+    for (var m in instance.interface) {
+        baseInstance.interface[m] = instance.interface[m];
+    }
+    baseInstance.name = instance.name;
+    return baseInstance;
 };

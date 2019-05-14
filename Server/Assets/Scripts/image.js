@@ -20,7 +20,7 @@ var image = {
                 }
             },
             interface: {
-                render: function () {
+                render: function (instance) {
                     var tr = document.game.api.getComponent(instance.gameObject, 'Transform');
                     var m = document.game.api.math;
 
