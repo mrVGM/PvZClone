@@ -193,9 +193,9 @@ document.game.api.startGame = function () {
 
     document.game.api.gameLoop();
 };
-document.game.api.getComponent = function (go, componentName) {
+document.game.api.getComponent = function (go, component) {
     for (var i = 0; i < go.components.length; ++i) {
-        if (go.components[i].instance.name === componentName) {
+        if (go.components[i].script === component.id) {
             return go.components[i].instance;
         }
     }
@@ -211,7 +211,7 @@ document.game.api.render = function () {
             };
         }
 
-        var imageComponent = document.game.api.getComponent(go, 'Image');
+        var imageComponent = document.game.api.getComponent(go, game.dev.image);
         
         if (imageComponent) {
             var fileId = imageComponent.params.image.value;

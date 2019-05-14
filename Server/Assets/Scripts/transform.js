@@ -1,4 +1,10 @@
 var transform = {
+    onLoad: function () {
+        if (!game.dev) {
+            game.dev = {};
+        }
+        game.dev.transform = transform;
+    },
     createInstance: function () {
         var instance = {
             name: 'Transform',
@@ -40,7 +46,7 @@ var transform = {
                         if (!go) {
                             return;
                         }
-                        var tr = document.game.api.getComponent(go, 'Transform');
+                        var tr = document.game.api.getComponent(go, game.dev.transform);
                         if (tr) {
                             return tr;
                         }

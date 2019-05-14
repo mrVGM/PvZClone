@@ -1,4 +1,10 @@
-var image = {
+var gameSettings = {
+    onLoad: function () {
+        if (!game.dev) {
+            game.dev = {};
+        }
+        game.dev.gameSettings = gameSettings;
+    },
     createInstance: function () {
         var instance = {
             name: 'GameSettings',
@@ -14,4 +20,4 @@ var image = {
     },
 };
 
-module.exports = image;
+module.exports = gameSettings;

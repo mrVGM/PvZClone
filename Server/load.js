@@ -1,11 +1,14 @@
 var module = {};
 
+var game = undefined;
+
 function onLoadLibrary(lib, callback) {
     lib = JSON.parse(lib);
 
     if (!document.game) {
         document.game = {};
     }
+    game = document.game;
 
     document.game.library = lib;
     document.game.scripts = {};
@@ -86,6 +89,10 @@ function onLoadLibrary(lib, callback) {
         document.body.appendChild(script);
         script.addEventListener('load', function () {
             document.game.scripts[scriptIndeces[scriptIndex]] = module.exports;
+            if (module.exports.onLoad) {
+                module.exports.onLoad();
+            }
+            module.exports.id = scriptIndeces[scriptIndex];
             ++scriptIndex;
             loadScripts();
         });

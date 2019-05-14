@@ -1,4 +1,10 @@
 var image = {
+    onLoad: function () {
+        if (!game.dev) {
+            game.dev = {};
+        }
+        game.dev.image = image;
+    },
     createInstance: function () {
         var instance = {
             name: 'Image',
@@ -21,7 +27,7 @@ var image = {
             },
             interface: {
                 render: function (instance) {
-                    var tr = document.game.api.getComponent(instance.gameObject, 'Transform');
+                    var tr = document.game.api.getComponent(instance.gameObject, game.dev.transform);
                     var m = document.game.api.math;
 
                     var center = m.vector.create(0, 0);
