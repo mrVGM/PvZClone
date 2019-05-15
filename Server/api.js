@@ -227,7 +227,7 @@ document.game.api.render = function () {
             render(go.children[i]);
         }
     }
-
+    document.game.api.baseStructures.context.clearRect(0, 0, document.game.api.baseStructures.canvas.width, document.game.api.baseStructures.canvas.height);
     for (var i = 0; i < document.game.api.baseStructures.liveObjects.length; ++i) {
         render(document.game.api.baseStructures.liveObjects[i]);
     }
