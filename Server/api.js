@@ -264,12 +264,14 @@ document.game.api.gameLoop = function () {
 
 
     for (var i = 0; i < components.length; ++i) {
-        if (components[i].instance.update) {
-            components[i].instance.update(dt);
+        if (components[i].instance.interface.update) {
+            components[i].instance.interface.update(dt);
         }
     }
 
     setTimeout(document.game.api.gameLoop);
+
+    document.game.inputEvents = [];
 };
 
 document.game.api.require = function (path) {
@@ -300,3 +302,21 @@ document.game.api.createInstance = function (script) {
     baseInstance.name = instance.name;
     return baseInstance;
 };
+
+document.game.inputEvents = [];
+
+canvas.addEventListener('mousedown', function (e) {
+    document.game.inputEvents.push(e);
+});
+canvas.addEventListener('mouseup', function (e) {
+    document.game.inputEvents.push(e);
+});
+canvas.addEventListener('click', function (e) {
+    document.game.inputEvents.push(e);
+});
+window.addEventListener('keypress', function (e) {
+    document.game.inputEvents.push(e);
+});
+canvas.addEventListener('contextmenu', function (e) {
+    return false;
+});
