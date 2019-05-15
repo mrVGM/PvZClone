@@ -177,7 +177,6 @@ document.game.api.instantiate = function (prefabStr, parent) {
         }
     }
     executeStart(prefab);
-    console.log(prefab.children[0].parent);
 };
 
 document.game.api.lastTick = undefined;

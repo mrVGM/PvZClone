@@ -35,7 +35,10 @@ document.game.api.math = {
         },
         magnitude: function (v) {
             return Math.sqrt(document.game.api.math.vector.squareMagnitude(v));
-        }
+        },
+        area: function (v, w) {
+            return -v.x * w.y + v.y * w.x;
+        },
     },
     transform: function (component, vector) {
         var m = document.game.api.math;
