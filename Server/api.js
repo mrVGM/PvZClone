@@ -193,8 +193,20 @@ document.game.api.startGame = function () {
     document.game.api.gameLoop();
 };
 document.game.api.getComponent = function (go, component) {
+    function assignable(fromId, toId) {
+        if (fromId === toId)
+            return true;
+
+        var script = document.game.scripts[fromId];
+        if (!script.extendsFrom)
+            return false;
+
+        var base = document.game.api.require(script.extendsFrom);
+        return assignable(base.id, toId);
+    }
+
     for (var i = 0; i < go.components.length; ++i) {
-        if (go.components[i].script === component.id) {
+        if (assignable(go.components[i].script, component.id)) {
             return go.components[i].instance;
         }
     }
