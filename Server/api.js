@@ -302,20 +302,48 @@ document.game.api.createInstance = function (script) {
     return baseInstance;
 };
 
+document.game.input = {
+    mouseButton: undefined,
+    mousePos: undefined,
+    mouseDown: undefined,
+
+    keysDown: {},
+};
+
 document.game.inputEvents = [];
 
 canvas.addEventListener('mousedown', function (e) {
+    document.game.input.mouseButton = e.button;
+    document.game.input.mouseDown = true;
+    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
+
     document.game.inputEvents.push(e);
 });
+
 canvas.addEventListener('mouseup', function (e) {
+    document.game.input.mouseButton = undefined;
+    document.game.input.mouseDown = false;
+    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
+
     document.game.inputEvents.push(e);
 });
-canvas.addEventListener('click', function (e) {
-    document.game.inputEvents.push(e);
+
+canvas.addEventListener('mousemove', function (e) {
+    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
 });
-window.addEventListener('keypress', function (e) {
-    document.game.inputEvents.push(e);
+canvas.addEventListener('mouseout', function (e) {
+    document.game.input.mouseButton = undefined;
+    document.game.input.mouseDown = undefined;
+    document.game.input.mousePos = undefined;
 });
+
+window.addEventListener('keydown', function (e) {
+    document.game.input.keysDown[e.keyCode] = { code: e.code, key: e.key };
+});
+window.addEventListener('keyup', function (e) {
+    document.game.input.keysDown[e.keyCode] = undefined;
+});
+
 canvas.addEventListener('contextmenu', function (e) {
     return false;
 });
