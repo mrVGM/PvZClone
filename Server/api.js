@@ -114,7 +114,7 @@ document.game.api.instantiate = function (prefabStr, parent) {
         for (var p in params) {
             var cur = params[p];
             if (cur.type === 'gameObject') {
-                cur.gameObjectRef = searchGO(data, cur.value);
+                cur.gameObjectRef = searchGO(prefab, cur.value);
                 continue;
             }
             if (cur.type === 'array') {
@@ -171,8 +171,8 @@ document.game.api.instantiate = function (prefabStr, parent) {
 
         for (var i = 0; i < components.length; ++i) {
             var cur = components[i];
-            if (cur.instance.start) {
-                cur.instance.start();
+            if (cur.instance.interface.start) {
+                cur.instance.interface.start(cur.instance);
             }
         }
     }
