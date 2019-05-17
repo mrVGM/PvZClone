@@ -264,7 +264,7 @@ document.game.api.gameLoop = function () {
 
     for (var i = 0; i < components.length; ++i) {
         if (components[i].instance.interface.update) {
-            components[i].instance.interface.update(dt);
+            components[i].instance.interface.update(components[i].instance, dt);
         }
     }
 
