@@ -22,6 +22,11 @@ var viewportSettings = {
                     type: 'fileObject',
                     value: undefined,
                 },
+                bezierCurveScript: {
+                    name: 'BezierCurveScript',
+                    type: 'fileObject',
+                    value: undefined,
+                }
             }
         };
         return instance;
