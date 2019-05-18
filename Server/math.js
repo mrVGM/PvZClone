@@ -1,47 +1,39 @@
-if (!document.game) {
-    document.game = {};
-}
-
-if (!document.game.api) {
-    document.game.api = {};
-}
-
-document.game.api.math = {
+game.api.math = {
     vector: {
         create: function (x, y) {
             return { x: x, y: y };
         },
         add: function (v, w) {
-            return document.game.api.math.vector.create(v.x + w.x, v.y + w.y);
+            return game.api.math.vector.create(v.x + w.x, v.y + w.y);
         },
         negate: function (v) {
-            return document.game.api.math.vector.create(-v.x, -v.y);
+            return game.api.math.vector.create(-v.x, -v.y);
         },
         subtract: function (v, w) {
-            return document.game.api.math.vector.add(v, document.game.api.math.vector.negate(w));
+            return game.api.math.vector.add(v, game.api.math.vector.negate(w));
         },
         dot: function (v, w) {
             return v.x * w.x + v.y * w.y;
         },
         perp: function (v) {
-            return document.game.api.math.vector.create(-v.y, v.x);
+            return game.api.math.vector.create(-v.y, v.x);
         },
         multiply: function (c, v) {
-            return document.game.api.math.vector.create(c * v.x, c * v.y);
+            return game.api.math.vector.create(c * v.x, c * v.y);
         },
         squareMagnitude: function (v) {
-            var squareMagnitude = document.game.api.math.vector.dot(v, v);
+            var squareMagnitude = game.api.math.vector.dot(v, v);
             return squareMagnitude;
         },
         magnitude: function (v) {
-            return Math.sqrt(document.game.api.math.vector.squareMagnitude(v));
+            return Math.sqrt(game.api.math.vector.squareMagnitude(v));
         },
         area: function (v, w) {
             return -v.x * w.y + v.y * w.x;
         },
     },
     transform: function (component, vector) {
-        var m = document.game.api.math;
+        var m = game.api.math;
 
         var scale = m.vector.create(component.params.scaleX.value, component.params.scaleY.value);
 

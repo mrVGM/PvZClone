@@ -3,20 +3,12 @@ var ctx = c.getContext("2d");
 
 var canvas = document.getElementById('canvas');
 
-if (!document.game) {
-    document.game = {};
-}
-
-if (!document.game.api) {
-    document.game.api = {};
-}
-
-document.game.api.baseStructures = {
+game.api.baseStructures = {
     canvas: canvas,
     context: canvas.getContext('2d'),
     liveObjects: [],
 };
-document.game.api.instantiate = function (prefabStr, parent) {
+game.api.instantiate = function (prefabStr, parent) {
     var prefab = JSON.parse(prefabStr);
 
     function setParent(go, parent) {
@@ -84,12 +76,12 @@ document.game.api.instantiate = function (prefabStr, parent) {
             script.value = data.value;
         }
     }
-    var scripts = document.game.scripts;
+    var scripts = game.scripts;
 
     function setComponents(go) {
         for (var i = 0; i < go.components.length; ++i) {
             var params = go.components[i].instance.params;
-            go.components[i].instance = document.game.api.createInstance(scripts[go.components[i].script]);
+            go.components[i].instance = game.api.createInstance(scripts[go.components[i].script]);
             updateParams(go.components[i].instance.params, params);
             go.components[i].instance.gameObject = go;
         }
@@ -150,7 +142,7 @@ document.game.api.instantiate = function (prefabStr, parent) {
         parent.children.push(prefab);
     }
     else {
-        document.game.api.baseStructures.liveObjects.push(prefab);
+        game.api.baseStructures.liveObjects.push(prefab);
     }
 
     function executeStart(go) {
@@ -179,29 +171,28 @@ document.game.api.instantiate = function (prefabStr, parent) {
     executeStart(prefab);
 };
 
-document.game.api.lastTick = undefined;
-document.game.api.lastFrame = 0;
-document.game.api.startGame = function () {
-    var game = document.game;
+game.api.lastTick = undefined;
+game.api.lastFrame = 0;
+game.api.startGame = function () {
     var prefab = game.library[game.gameSettings.scriptableObject.component.instance.params.initialPrefab.value];
-    document.game.api.instantiate(prefab.prefabStr);
+    game.api.instantiate(prefab.prefabStr);
 
     var d = new Date();
-    document.game.api.lastTick = d.getTime();
-    document.game.api.lastFrame = -1;
+    game.api.lastTick = d.getTime();
+    game.api.lastFrame = -1;
 
-    document.game.api.gameLoop();
+    game.api.gameLoop();
 };
-document.game.api.getComponent = function (go, component) {
+game.api.getComponent = function (go, component) {
     function assignable(fromId, toId) {
         if (fromId === toId)
             return true;
 
-        var script = document.game.scripts[fromId];
+        var script = game.scripts[fromId];
         if (!script.extendsFrom)
             return false;
 
-        var base = document.game.api.require(script.extendsFrom);
+        var base = game.api.require(script.extendsFrom);
         return assignable(base.id, toId);
     }
 
@@ -212,22 +203,22 @@ document.game.api.getComponent = function (go, component) {
     }
 };
 
-document.game.api.render = function () {
+game.api.render = function () {
     function render(go) {
         function loadImage(id) {
             var img = new Image();
-            img.src = document.game.library[id].path;
+            img.src = game.library[id].path;
             img.onload = function () {
-                document.game.library[id].image = img;
+                game.library[id].image = img;
             };
         }
 
-        var imageComponent = document.game.api.getComponent(go, game.dev.image);
+        var imageComponent = game.api.getComponent(go, game.dev.image);
         
         if (imageComponent) {
             var fileId = imageComponent.params.image.value;
 
-            if (!document.game.library[fileId].image) {
+            if (!game.library[fileId].image) {
                 loadImage(fileId);
                 return;
             }
@@ -239,13 +230,13 @@ document.game.api.render = function () {
             render(go.children[i]);
         }
     }
-    document.game.api.baseStructures.context.clearRect(0, 0, document.game.api.baseStructures.canvas.width, document.game.api.baseStructures.canvas.height);
-    for (var i = 0; i < document.game.api.baseStructures.liveObjects.length; ++i) {
-        render(document.game.api.baseStructures.liveObjects[i]);
+    game.api.baseStructures.context.clearRect(0, 0, game.api.baseStructures.canvas.width, game.api.baseStructures.canvas.height);
+    for (var i = 0; i < game.api.baseStructures.liveObjects.length; ++i) {
+        render(game.api.baseStructures.liveObjects[i]);
     }
 };
 
-document.game.api.gameLoop = function () {
+game.api.gameLoop = function () {
     function getComponents(gameObject) {
         if (gameObject.children.length === 0) {
             return gameObject.components;
@@ -259,9 +250,9 @@ document.game.api.gameLoop = function () {
         return res;
     }
 
-    document.game.api.render();
+    game.api.render();
 
-    var liveObjects = document.game.api.baseStructures.liveObjects;
+    var liveObjects = game.api.baseStructures.liveObjects;
     var components = [];
     for (var i = 0; i < liveObjects.length; ++i) {
         components = components.concat(getComponents(liveObjects[i]));
@@ -269,9 +260,9 @@ document.game.api.gameLoop = function () {
 
     var date = new Date();
     var time = date.getTime();
-    var dt = time - document.game.api.lastTick;
-    document.game.api.lastTick = time;
-    ++document.game.api.lastFrame;
+    var dt = time - game.api.lastTick;
+    game.api.lastTick = time;
+    ++game.api.lastFrame;
 
 
     for (var i = 0; i < components.length; ++i) {
@@ -280,26 +271,26 @@ document.game.api.gameLoop = function () {
         }
     }
 
-    setTimeout(document.game.api.gameLoop);
+    setTimeout(game.api.gameLoop);
 
-    document.game.inputEvents = [];
+    game.inputEvents = [];
 };
 
-document.game.api.require = function (path) {
-    var lib = document.game.library;
+game.api.require = function (path) {
+    var lib = game.library;
     for (var feId in lib) {
         if (lib[feId].path === path) {
-            return document.game.scripts[feId];
+            return game.scripts[feId];
         }
     }
 };
 
-document.game.api.createInstance = function (script) {
+game.api.createInstance = function (script) {
     if (!script.extendsFrom) {
         return script.createInstance();
     }
-    var baseScript = document.game.api.require(script.extendsFrom);
-    var baseInstance = document.game.api.createInstance(baseScript);
+    var baseScript = game.api.require(script.extendsFrom);
+    var baseInstance = game.api.createInstance(baseScript);
     var instance = script.createInstance();
 
     //baseInstance.name = instance.name;
@@ -314,7 +305,7 @@ document.game.api.createInstance = function (script) {
     return baseInstance;
 };
 
-document.game.input = {
+game.input = {
     mouseButton: undefined,
     mousePos: undefined,
     mouseDown: undefined,
@@ -322,38 +313,38 @@ document.game.input = {
     keysDown: {},
 };
 
-document.game.inputEvents = [];
+game.inputEvents = [];
 
 canvas.addEventListener('mousedown', function (e) {
-    document.game.input.mouseButton = e.button;
-    document.game.input.mouseDown = true;
-    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
+    game.input.mouseButton = e.button;
+    game.input.mouseDown = true;
+    game.input.mousePos = game.api.math.vector.create(e.offsetX, e.offsetY);
 
-    document.game.inputEvents.push(e);
+    game.inputEvents.push(e);
 });
 
 canvas.addEventListener('mouseup', function (e) {
-    document.game.input.mouseButton = undefined;
-    document.game.input.mouseDown = false;
-    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
+    game.input.mouseButton = undefined;
+    game.input.mouseDown = false;
+    game.input.mousePos = game.api.math.vector.create(e.offsetX, e.offsetY);
 
-    document.game.inputEvents.push(e);
+    game.inputEvents.push(e);
 });
 
 canvas.addEventListener('mousemove', function (e) {
-    document.game.input.mousePos = document.game.api.math.vector.create(e.offsetX, e.offsetY);
+    game.input.mousePos = game.api.math.vector.create(e.offsetX, e.offsetY);
 });
 canvas.addEventListener('mouseout', function (e) {
-    document.game.input.mouseButton = undefined;
-    document.game.input.mouseDown = undefined;
-    document.game.input.mousePos = undefined;
+    game.input.mouseButton = undefined;
+    game.input.mouseDown = undefined;
+    game.input.mousePos = undefined;
 });
 
 window.addEventListener('keydown', function (e) {
-    document.game.input.keysDown[e.keyCode] = { code: e.code, key: e.key };
+    game.input.keysDown[e.keyCode] = { code: e.code, key: e.key };
 });
 window.addEventListener('keyup', function (e) {
-    document.game.input.keysDown[e.keyCode] = undefined;
+    game.input.keysDown[e.keyCode] = undefined;
 });
 
 canvas.addEventListener('contextmenu', function (e) {

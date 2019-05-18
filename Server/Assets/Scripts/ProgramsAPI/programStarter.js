@@ -1,11 +1,5 @@
 var programStarter = {
     onLoad: function () {
-        if (!game.dev) {
-            game.dev = {};
-        }
-        if (!game.dev.programs) {
-            game.dev.programs = {};
-        }
         game.dev.programs.programStarter = programStarter;
     },
     createInstance: function () {

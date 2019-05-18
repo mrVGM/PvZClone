@@ -1,8 +1,5 @@
 var collider = {
     onLoad: function () {
-        if (!game.dev) {
-            game.dev = {};
-        }
         game.dev.collider = collider;
     },
     createInstance: function () {

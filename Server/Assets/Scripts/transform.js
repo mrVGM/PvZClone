@@ -1,8 +1,5 @@
 var transform = {
     onLoad: function () {
-        if (!game.dev) {
-            game.dev = {};
-        }
         game.dev.transform = transform;
     },
     createInstance: function () {
@@ -46,14 +43,14 @@ var transform = {
                         if (!go) {
                             return;
                         }
-                        var tr = document.game.api.getComponent(go, game.dev.transform);
+                        var tr = game.api.getComponent(go, game.dev.transform);
                         if (tr) {
                             return tr;
                         }
                         return findParentTransform(go.parent);
                     }
 
-                    var m = document.game.api.math;
+                    var m = game.api.math;
 
                     var curGo = instance.gameObject;
 

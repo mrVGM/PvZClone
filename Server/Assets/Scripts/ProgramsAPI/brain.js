@@ -1,11 +1,5 @@
 var brain = {
     onLoad: function () {
-        if (!game.dev) {
-            game.dev = {};
-        }
-        if (!game.dev.programs) {
-            game.dev.programs = {};
-        }
         game.dev.programs.brain = brain;
     },
     createInstance: function () {

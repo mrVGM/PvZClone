@@ -1,8 +1,5 @@
 var image = {
     onLoad: function () {
-        if (!game.dev) {
-            game.dev = {};
-        }
         game.dev.image = image;
     },
     createInstance: function () {
@@ -27,8 +24,8 @@ var image = {
             },
             interface: {
                 render: function (instance) {
-                    var image = document.game.library[instance.params.image.value].image;
-                    var context = document.game.api.baseStructures.context;
+                    var image = game.library[instance.params.image.value].image;
+                    var context = game.api.baseStructures.context;
 
                     var m = game.api.math;
                     var tr = game.api.getComponent(instance.gameObject, game.dev.transform);

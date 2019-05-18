@@ -1,17 +1,10 @@
 var module = {};
 
-var game = undefined;
-
 function onLoadLibrary(lib, callback) {
     lib = JSON.parse(lib);
 
-    if (!document.game) {
-        document.game = {};
-    }
-    game = document.game;
-
-    document.game.library = lib;
-    document.game.scripts = {};
+    game.library = lib;
+    game.scripts = {};
 
     var scriptIndeces = [];
     var assetIndeces = [];
@@ -40,11 +33,11 @@ function onLoadLibrary(lib, callback) {
     function loadPrefabs() {
         if (prefabIndex === prefabIndeces.length) {
             console.log('ready');
-            document.game.api.startGame();
+            game.api.startGame();
             return;
         }
 
-        var curPrefab = document.game.library[prefabIndeces[prefabIndex]];
+        var curPrefab = game.library[prefabIndeces[prefabIndex]];
         loadJSON(curPrefab.path, function (json) {
             curPrefab.prefabStr = json;
             ++prefabIndex;
@@ -56,10 +49,10 @@ function onLoadLibrary(lib, callback) {
     function loadAssets() {
         if (assetIndex === assetIndeces.length) {
 
-            for (var fe in document.game.library) {
-                var cur = document.game.library[fe];
+            for (var fe in game.library) {
+                var cur = game.library[fe];
                 if (cur.scriptableObject && cur.scriptableObject.component.instance.name === 'GameSettings') {
-                    document.game.gameSettings = cur;
+                    game.gameSettings = cur;
                     break;
                 }
             }
@@ -69,7 +62,7 @@ function onLoadLibrary(lib, callback) {
             return;
         }
 
-        var curAsset = document.game.library[assetIndeces[assetIndex]];
+        var curAsset = game.library[assetIndeces[assetIndex]];
         var asset = loadJSON(curAsset.path, function (json) {
             curAsset.scriptableObject = JSON.parse(json);
             ++assetIndex;
@@ -88,7 +81,7 @@ function onLoadLibrary(lib, callback) {
         script.setAttribute('src', lib[scriptIndeces[scriptIndex]].path);
         document.body.appendChild(script);
         script.addEventListener('load', function () {
-            document.game.scripts[scriptIndeces[scriptIndex]] = module.exports;
+            game.scripts[scriptIndeces[scriptIndex]] = module.exports;
             if (module.exports.onLoad) {
                 module.exports.onLoad();
             }
