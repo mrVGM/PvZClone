@@ -42,7 +42,7 @@ var image = {
                     var cos = m.vector.dot(u, d);
                     var sin = m.vector.area(u, d);
 
-                    if (sin - 0 < 0.00001) {
+                    if (Math.abs(sin) < 0.00001) {
                         return;
                     }
 
