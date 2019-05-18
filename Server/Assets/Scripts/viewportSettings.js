@@ -12,6 +12,16 @@ var viewportSettings = {
                     type: 'number',
                     value: 600,
                 },
+                imageScript: {
+                    name: 'Image Script',
+                    type: 'fileObject',
+                    value: undefined,
+                },
+                transformScript: {
+                    name: 'Transform Script',
+                    type: 'fileObject',
+                    value: undefined,
+                },
             }
         };
         return instance;
