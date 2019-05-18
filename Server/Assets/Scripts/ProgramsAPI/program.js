@@ -1,5 +1,6 @@
 var program = {
     onLoad: function () {
+        console.log('ProgramLoaded');
         game.dev.programs.program = program;
     },
     createInstance: function () {

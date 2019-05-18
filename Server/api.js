@@ -204,36 +204,7 @@ game.api.getComponent = function (go, component) {
 };
 
 game.api.render = function () {
-    function render(go) {
-        function loadImage(id) {
-            var img = new Image();
-            img.src = game.library[id].path;
-            img.onload = function () {
-                game.library[id].image = img;
-            };
-        }
-
-        var imageComponent = game.api.getComponent(go, game.dev.image);
-        
-        if (imageComponent) {
-            var fileId = imageComponent.params.image.value;
-
-            if (!game.library[fileId].image) {
-                loadImage(fileId);
-                return;
-            }
-
-            imageComponent.interface.render(imageComponent);
-        }
-
-        for (var i = 0; i < go.children.length; ++i) {
-            render(go.children[i]);
-        }
-    }
-    game.api.baseStructures.context.clearRect(0, 0, game.api.baseStructures.canvas.width, game.api.baseStructures.canvas.height);
-    for (var i = 0; i < game.api.baseStructures.liveObjects.length; ++i) {
-        render(game.api.baseStructures.liveObjects[i]);
-    }
+    game.api.renderGameObjects.render(game.api.baseStructures.liveObjects);
 };
 
 game.api.gameLoop = function () {
