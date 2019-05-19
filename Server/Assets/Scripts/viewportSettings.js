@@ -23,10 +23,15 @@ var viewportSettings = {
                     value: undefined,
                 },
                 bezierCurveScript: {
-                    name: 'BezierCurveScript',
+                    name: 'Bezier Curve Script',
                     type: 'fileObject',
                     value: undefined,
-                }
+                },
+                mathScript: {
+                    name: 'Math Script',
+                    type: 'fileObject',
+                    value: undefined,
+                },
             }
         };
         return instance;
