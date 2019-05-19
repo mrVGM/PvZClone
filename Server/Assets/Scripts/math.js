@@ -8,29 +8,29 @@ var math = {
                 return { x: x, y: y };
             },
             add: function (v, w) {
-                return game.api.math.vector.create(v.x + w.x, v.y + w.y);
+                return math.math.vector.create(v.x + w.x, v.y + w.y);
             },
             negate: function (v) {
-                return game.api.math.vector.create(-v.x, -v.y);
+                return math.math.vector.create(-v.x, -v.y);
             },
             subtract: function (v, w) {
-                return game.api.math.vector.add(v, game.api.math.vector.negate(w));
+                return math.math.vector.add(v, math.math.vector.negate(w));
             },
             dot: function (v, w) {
                 return v.x * w.x + v.y * w.y;
             },
             perp: function (v) {
-                return game.api.math.vector.create(-v.y, v.x);
+                return math.math.vector.create(-v.y, v.x);
             },
             multiply: function (c, v) {
-                return game.api.math.vector.create(c * v.x, c * v.y);
+                return math.math.vector.create(c * v.x, c * v.y);
             },
             squareMagnitude: function (v) {
-                var squareMagnitude = game.api.math.vector.dot(v, v);
+                var squareMagnitude = math.math.vector.dot(v, v);
                 return squareMagnitude;
             },
             magnitude: function (v) {
-                return Math.sqrt(game.api.math.vector.squareMagnitude(v));
+                return Math.sqrt(math.math.vector.squareMagnitude(v));
             },
             area: function (v, w) {
                 return -v.x * w.y + v.y * w.x;

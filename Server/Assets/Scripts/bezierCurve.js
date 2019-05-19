@@ -39,7 +39,7 @@ var bezierCurve = {
                     return game.api.math;
                 },
                 getPoint: function (inst, leftCP, rightCP, localWeigth) {
-                    var points = [leftCP.point, leftCP.rightHandle, rightCP.leftCP, rightCP.point];
+                    var points = [leftCP.point, leftCP.rightHandle, rightCP.leftHandle, rightCP.point];
                     if (!points[1]) {
                         points[1] = leftCP.point;
                     }
@@ -48,10 +48,45 @@ var bezierCurve = {
                     }
 
                     var m = inst.interface.getMath();
-                    var tmp = [];
 
-                    var tmp = m.vector.multiply((1 - localWeigth), points[0])
-                }
+                    var tmp = [];
+                    tmp.push(m.vector.add(m.vector.multiply((1 - localWeigth), points[0]), m.vector.multiply(localWeigth, points[1])));
+                    tmp.push(m.vector.add(m.vector.multiply((1 - localWeigth), points[1]), m.vector.multiply(localWeigth, points[2])));
+                    tmp.push(m.vector.add(m.vector.multiply((1 - localWeigth), points[2]), m.vector.multiply(localWeigth, points[3])));
+
+                    points = tmp;
+
+                    tmp = [];
+                    tmp.push(m.vector.add(m.vector.multiply((1 - localWeigth), points[0]), m.vector.multiply(localWeigth, points[1])));
+                    tmp.push(m.vector.add(m.vector.multiply((1 - localWeigth), points[1]), m.vector.multiply(localWeigth, points[2])));
+                    points = tmp;
+
+                    return m.vector.add(m.vector.multiply((1 - localWeigth), points[0]), m.vector.multiply(localWeigth, points[1]));
+                },
+                getEnclosingPointsAndLocalWeight: function (inst, allPoints, weight) {
+                    var sorted = [].concat(allPoints);
+                    for (var i = 0; i < sorted.length - 1; ++i) {
+                        for (var j = i + 1; j < sorted.length; ++j) {
+                            if (sorted[j].weight < sorted[i].weight) {
+                                var tmp = sorted[i];
+                                sorted[i] = sorted[j];
+                                sorted[j] = tmp;
+                            }
+                        }
+                    }
+                    var left = 0;
+                    for (var i = 1; i < sorted.length; ++i) {
+                        if (sorted[i].weight >= weight) {
+                            left = i - 1;
+                            break;
+                        }
+                    }
+                    return {
+                        left: sorted[left],
+                        right: sorted[left + 1],
+                        localWeight: (weight - sorted[left].weight) / (sorted[left + 1].weight - sorted[left].weight),
+                    };
+                },
             },
         };
         return inst;
