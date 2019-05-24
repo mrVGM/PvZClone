@@ -7,7 +7,7 @@ var program = {
             interface: {
                 coroutine: function (inst) {
                     var childProgram = inst.gameObject.children[0];
-                    childProgram = game.api.getComponent(childProgram, game.dev.program);
+                    childProgram = game.api.getComponent(childProgram, game.dev.programs.program);
                     game.api.startProgram(childProgram, inst.context);
 
                     function crt() {
@@ -20,7 +20,7 @@ var program = {
                 },
                 finish: function (inst) {
                     var childProgram = inst.gameObject.children[0];
-                    childProgram = game.api.getComponent(childProgram, game.dev.program);
+                    childProgram = game.api.getComponent(childProgram, game.dev.programs.program);
                     childProgram.stop = true;
 
                     function crt() {

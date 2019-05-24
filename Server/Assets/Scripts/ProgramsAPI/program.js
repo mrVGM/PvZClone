@@ -38,24 +38,8 @@ var program = {
                 }
             },
             interface: {
-                coroutine: function (inst) {
-                    var cnt = 0;
-                    function crt() {
-                        console.log(cnt++);
-                        if (cnt < 20)
-                            return crt;
-                    }
-                    return crt;
-                },
-                finish: function (inst) {
-                    var cnt = 0;
-                    function crt() {
-                        console.log(cnt++);
-                        if (cnt < 20)
-                            return crt;
-                    }
-                    return crt;
-                },
+                coroutine: function (inst) { },
+                finish: function (inst) { },
                 createCoroutine: function (inst) {
                     var c = inst.interface.coroutine(inst);
                     var f = inst.interface.finish;
