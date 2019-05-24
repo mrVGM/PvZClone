@@ -2,12 +2,20 @@ var pointer = {
     extendsFrom: 'Assets\\Scripts\\ProgramsAPI\\program.js',
     createInstance: function () {
         var inst = {
+            name: 'Pointer',
+            params: {
+                pointedTargetsTag: {
+                    name: 'Pointed Targets Tag:',
+                    type: 'fileObject',
+                    value: undefined
+                }
+            },
             interface: {
                 coroutine: function (inst) {
                     function findColliders(go) {
                         var res = [];
                         var col = game.api.getComponent(go, game.dev.collider);
-                        if (col) {
+                        if (col && game.api.getComponent(go, game.dev.pointerTarget)) {
                             res = [col];
                         }
                         for (var i = 0; i < go.children.length; ++i) {
@@ -23,12 +31,13 @@ var pointer = {
                         }
                         var mousePos = game.input.mousePos;
                         if (mousePos) {
+                            var pointed = [];
                             for (var i = 0; i < cols.length; ++i) {
                                 if (cols[i].interface.isInside(cols[i], mousePos)) {
-                                    var tr = game.api.getComponent(cols[i].gameObject, game.dev.transform);
-                                    tr.params.x.value += 10;
+                                    pointed.push(cols[i]);
                                 }
                             }
+                            inst.interface.dispatchEvent(inst, inst.params.pointedTargetsTag.value, pointed);
                         }
                         return crt;
                     }

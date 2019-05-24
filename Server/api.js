@@ -100,25 +100,25 @@ game.api.instantiate = function (prefabStr, parent) {
         }
     }
 
+    function setGOParam(param) {
+        if (param.type === 'gameObject') {
+            param.gameObjectRef = searchGO(prefab, param.value);
+            return;
+        }
+        if (param.type === 'array') {
+            for (var i = 0; i < param.value.length; ++i) {
+                setGOParam(param.value[i]);
+            }
+            return;
+        }
+        if (param.type === 'custom') {
+            setGOParams(param.value);
+        }
+    }
+
     function setGOParams(params) {
         for (var p in params) {
-            var cur = params[p];
-            if (cur.type === 'gameObject') {
-                cur.gameObjectRef = searchGO(prefab, cur.value);
-                continue;
-            }
-            if (cur.type === 'array') {
-                for (var i = 0; i < cur.value.length; ++i) {
-                    setGOParams(cur.value[i]);
-                }
-                continue;
-            }
-            if (cur.type === 'custom') {
-                for (var subParam in cur.value) {
-                    var sp = cur.value[subParam];
-                    setGOParams(sp);
-                }
-            }
+            setGOParam(params[p]);
         }
     }
 

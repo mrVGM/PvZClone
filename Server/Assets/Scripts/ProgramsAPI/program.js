@@ -8,12 +8,34 @@ var program = {
             name: 'Program',
             stop: false,
             finished: false,
+            subscribers: {},
+            events: {},
             params: {
                 updateTime: {
                     name: 'Update Time',
                     type: 'number',
                     value: 0,
                 },
+                subscribeTo: {
+                    name: "Subscribe to:",
+                    type: 'array',
+                    value: [],
+                    defaultElement: {
+                        type: "custom",
+                        value: {
+                            tag: {
+                                name: 'Tag',
+                                type: 'fileObject',
+                                value: undefined
+                            },
+                            program: {
+                                name: 'Program',
+                                type: 'gameObject',
+                                value: undefined
+                            }
+                        }
+                    }
+                }
             },
             interface: {
                 coroutine: function (inst) {
@@ -41,6 +63,7 @@ var program = {
                     function crt() {
                         if (!permanentStop && !inst.stop && c) {
                             c = c();
+                            inst.events = {};
                             return crt;
                         }
                         if (!permanentStop) {
@@ -52,11 +75,33 @@ var program = {
                             if (!f) {
                                 inst.finished = true;
                             }
+                            inst.events = {};
                             return crt;
                         }
                         inst.finished = true;
                     }
                     return crt;
+                },
+                start: function (inst) {
+                    for (var i = 0; i < inst.params.subscribeTo.value.length; ++i) {
+                        var cur = inst.params.subscribeTo.value[i];
+                        var program = game.api.getComponent(cur.value.program.gameObjectRef, game.dev.programs.program);
+                        if (!program.subscribers[cur.value.tag.value]) {
+                            program.subscribers[cur.value.tag.value] = [];
+                        }
+                        program.subscribers[cur.value.tag.value].push(inst);
+                    }
+                },
+                dispatchEvent: function (inst, tag, data) {
+                    var subscribedPrograms = inst.subscribers[tag];
+
+                    if (!subscribedPrograms)
+                        return;
+
+                    for (var i = 0; i < subscribedPrograms.length; ++i) {
+                        var cur = subscribedPrograms[i];
+                        cur.events[tag] = data;
+                    }
                 }
             },
         };
