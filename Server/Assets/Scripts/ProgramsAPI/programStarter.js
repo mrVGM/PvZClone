@@ -1,6 +1,40 @@
 var programStarter = {
     onLoad: function () {
         game.dev.programs.programStarter = programStarter;
+        game.api.startProgram = function (program, context) {
+            program.context = context;
+            program.started = true;
+
+            function findBrain(go) {
+                var comp = game.api.getComponent(go, game.dev.programs.brain);
+                if (comp) {
+                    return comp;
+                }
+                for (var i = 0; i < go.children.length; ++i) {
+                    comp = findBrain(go.children[i]);
+                    if (comp) {
+                        return comp;
+                    }
+                }
+            }
+            var brain = undefined;
+            var liveObjects = game.api.baseStructures.liveObjects;
+            for (var i = 0; i < liveObjects.length; ++i) {
+                brain = findBrain(liveObjects[i]);
+                if (brain) {
+                    break;
+                }
+            }
+            if (brain) {
+                var crt = program.interface.createCoroutine(program);
+                if (crt) {
+                    brain.interface.addCoroutine(brain, { updateTime: program.params.updateTime, crt: crt });
+                }
+            }
+            else {
+                console.log('Brain not found!');
+            }
+        };
     },
     createInstance: function () {
         var inst = {
@@ -18,35 +52,7 @@ var programStarter = {
                     if (!program) {
                         console.log('Program not found!');
                     }
-                    function findBrain(go) {
-                        var comp = game.api.getComponent(go, game.dev.programs.brain);
-                        if (comp) {
-                            return comp;
-                        }
-                        for (var i = 0; i < go.children.length; ++i) {
-                            comp = findBrain(go.children[i]);
-                            if (comp) {
-                                return comp;
-                            }
-                        }
-                    }
-                    var brain = undefined;
-                    var liveObjects = game.api.baseStructures.liveObjects;
-                    for (var i = 0; i < liveObjects.length; ++i) {
-                        brain = findBrain(liveObjects[i]);
-                        if (brain) {
-                            break;
-                        }
-                    }
-                    if (brain) {
-                        var crt = program.interface.createCoroutine(program);
-                        if (crt) {
-                            brain.interface.addCoroutine(brain, { updateTime: program.params.updateTime, crt: crt });
-                        }
-                    }
-                    else {
-                        console.log('Brain not found!');
-                    }
+                    game.api.startProgram(program, {});
                 }
             },
         };

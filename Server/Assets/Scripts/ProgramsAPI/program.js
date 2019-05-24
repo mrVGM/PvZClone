@@ -7,6 +7,7 @@ var program = {
         var inst = {
             name: 'Program',
             stop: false,
+            finished: false,
             params: {
                 updateTime: {
                     name: 'Update Time',
@@ -48,8 +49,12 @@ var program = {
                         permanentStop = true;
                         if (f) {
                             f = f();
+                            if (!f) {
+                                inst.finished = true;
+                            }
                             return crt;
                         }
+                        inst.finished = true;
                     }
                     return crt;
                 }
