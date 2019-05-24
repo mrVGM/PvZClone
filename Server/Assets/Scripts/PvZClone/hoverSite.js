@@ -22,13 +22,20 @@ var hoverSite = {
                         if (pointed) {
                             for (var i = 0; i < pointed.length; ++i) {
                                 if (pointed[i].gameObject.id === inst.params.site.gameObjectRef.id) {
-                                    console.log("I'm hovered!");
+                                    var tr = game.api.getComponent(inst.params.site.gameObjectRef, game.dev.transform);
+                                    tr.params.scaleX.value = 1.1;
+                                    tr.params.scaleY.value = 1.1;
                                     return crt;
                                 }
                             }
                         }
                     }
                     return crt;
+                },
+                finish: function (inst) {
+                    var tr = game.api.getComponent(inst.params.site.gameObjectRef, game.dev.transform);
+                    tr.params.scaleX.value = 1;
+                    tr.params.scaleY.value = 1;
                 }
             }
         };
