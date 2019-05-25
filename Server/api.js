@@ -3,21 +3,15 @@ var ctx = c.getContext("2d");
 
 var canvas = document.getElementById('canvas');
 
+var frameMinDT = 16;
+
 game.api.baseStructures = {
     canvas: canvas,
     context: canvas.getContext('2d'),
     liveObjects: [],
 };
-game.api.instantiate = function (prefabStr, parent) {
-    var prefab = JSON.parse(prefabStr);
 
-    function setParent(go, parent) {
-        go.parent = parent;
-        for (var i = 0; i < go.children.length; ++i) {
-            setParent(go.children[i], go);
-        }
-    }
-
+game.api.updateParams = function (fromScript, fromData) {
     function copyParam(p) {
         var res = {
             name: p.name,
@@ -58,29 +52,39 @@ game.api.instantiate = function (prefabStr, parent) {
         }
 
         if (fromData.type === 'custom') {
-            updateParams(fromScript.value, fromData.value);
+            game.api.updateParams(fromScript.value, fromData.value);
             return;
         }
 
         fromScript.value = fromData.value;
     }
 
-    function updateParams(fromScript, fromData) {
-        for (var p in fromData) {
-            if (!fromScript[p]) {
-                continue;
-            }
+    for (var p in fromData) {
+        if (!fromScript[p]) {
+            continue;
+        }
 
-            updateSingleParam(fromScript[p], fromData[p]);
+        updateSingleParam(fromScript[p], fromData[p]);
+    }
+};
+
+game.api.instantiate = function (prefabStr, parent) {
+    var prefab = JSON.parse(prefabStr);
+
+    function setParent(go, parent) {
+        go.parent = parent;
+        for (var i = 0; i < go.children.length; ++i) {
+            setParent(go.children[i], go);
         }
     }
+
     var scripts = game.scripts;
 
     function setComponents(go) {
         for (var i = 0; i < go.components.length; ++i) {
             var params = go.components[i].instance.params;
             go.components[i].instance = game.api.createInstance(scripts[go.components[i].script]);
-            updateParams(go.components[i].instance.params, params);
+            game.api.updateParams(go.components[i].instance.params, params);
             go.components[i].instance.gameObject = go;
         }
         for (var i = 0; i < go.children.length; ++i) {
@@ -206,6 +210,8 @@ game.api.render = function () {
 };
 
 game.api.gameLoop = function () {
+    var frameStart = (new Date()).getTime();
+
     function getComponents(gameObject) {
         if (gameObject.children.length === 0) {
             return gameObject.components;
@@ -233,14 +239,18 @@ game.api.gameLoop = function () {
     game.api.lastTick = time;
     ++game.api.lastFrame;
 
-
     for (var i = 0; i < components.length; ++i) {
         if (components[i].instance.interface.update) {
             components[i].instance.interface.update(components[i].instance, dt);
         }
     }
 
-    setTimeout(game.api.gameLoop);
+    var frameDuration = (new Date()).getTime() - frameStart;
+    var timeOut = 0;
+    if (frameDuration < frameMinDT) {
+        timeOut = frameMinDT - frameDuration;
+    }
+    setTimeout(game.api.gameLoop, timeOut);
 
     game.inputEvents = [];
 };

@@ -17,7 +17,7 @@ var program = {
                     value: 0,
                 },
                 subscribeTo: {
-                    name: "Subscribe to:",
+                    name: "Subscribe to",
                     type: 'array',
                     value: [],
                     defaultElement: {

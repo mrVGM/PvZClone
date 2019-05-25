@@ -5,7 +5,7 @@ var program = {
             name: 'Run Parallel',
             params: {
                 considerToEnd: {
-                    name: 'Consider to End:',
+                    name: 'Consider to End',
                     type: 'array',
                     value: [],
                     defaultElement: {
@@ -19,7 +19,7 @@ var program = {
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
-                        var subProg = game.api.getComponent(children[i], game.dev.program);
+                        var subProg = game.api.getComponent(children[i], game.dev.programs.program);
                         subPrograms.push(subProg);
                         game.api.startProgram(subProg, inst.context);
                     }

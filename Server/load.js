@@ -65,6 +65,12 @@ function onLoadLibrary(lib, callback) {
         var curAsset = game.library[assetIndeces[assetIndex]];
         var asset = loadJSON(curAsset.path, function (json) {
             curAsset.scriptableObject = JSON.parse(json);
+            var script = curAsset.scriptableObject.component.script;
+            script = game.scripts[script];
+            var inst = script.createInstance();
+            game.api.updateParams(inst.params, curAsset.scriptableObject.component.instance.params);
+            curAsset.scriptableObject.component.instance = inst;
+
             ++assetIndex;
             loadAssets();
         });

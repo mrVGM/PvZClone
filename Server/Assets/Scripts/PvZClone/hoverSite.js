@@ -3,15 +3,21 @@ var hoverSite = {
     createInstance: function () {
         var inst = {
             name: 'Hover Site',
+            hovered: undefined,
             params: {
                 pointedTargetsTag: {
                     name: 'PointedTargetsTag',
                     type: 'fileObject',
                     value: undefined
                 },
-                site: {
-                    name: 'Site',
-                    type: 'gameObject',
+                siteTag: {
+                    name: 'Site Tag',
+                    type: 'fileObject',
+                    value: undefined
+                },
+                hoverAnimation: {
+                    name: 'Hover animation',
+                    type: 'fileObject',
                     value: undefined
                 }
             },
@@ -21,10 +27,17 @@ var hoverSite = {
                         var pointed = inst.events[inst.params.pointedTargetsTag.value];
                         if (pointed) {
                             for (var i = 0; i < pointed.length; ++i) {
-                                if (pointed[i].gameObject.id === inst.params.site.gameObjectRef.id) {
-                                    var tr = game.api.getComponent(inst.params.site.gameObjectRef, game.dev.transform);
-                                    tr.params.scaleX.value = 1.1;
-                                    tr.params.scaleY.value = 1.1;
+                                var pointerTarget = game.api.getComponent(pointed[i].gameObject, game.dev.pointerTarget);
+                                if (pointerTarget && pointerTarget.params.targetType.value === inst.params.siteTag.value) {
+                                    if (!inst.hovered) {
+                                        var animator = game.api.getComponent(pointed[i].gameObject, game.dev.animation.animator);
+
+                                        var anim = inst.params.hoverAnimation.value;
+                                        anim = game.library[anim].scriptableObject.component.instance;
+
+                                        animator.interface.playAnimation(animator, anim);
+                                    }
+                                    inst.hovered = pointed[i].gameObject;
                                     return crt;
                                 }
                             }
@@ -33,9 +46,10 @@ var hoverSite = {
                     return crt;
                 },
                 finish: function (inst) {
-                    var tr = game.api.getComponent(inst.params.site.gameObjectRef, game.dev.transform);
-                    tr.params.scaleX.value = 1;
-                    tr.params.scaleY.value = 1;
+                    if (!inst.hovered)
+                        return;
+
+                    inst.hovered = undefined;
                 }
             }
         };
