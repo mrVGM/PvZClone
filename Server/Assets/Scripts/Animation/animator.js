@@ -6,6 +6,7 @@ var animator = {
         var inst = {
             name: 'Animator',
             currentAnimation: undefined,
+            currentAnimationID: undefined,
             animationProgress: 0,
             toChange: undefined,
             interface: {
@@ -29,7 +30,9 @@ var animator = {
                     }
 
                     if (inst.toChange) {
-                        inst.currentAnimation = inst.toChange;
+                        inst.currentAnimationID = inst.toChange;
+                        var anim = game.library[inst.currentAnimationID].scriptableObject.component.instance;
+                        inst.currentAnimation = anim;
                         inst.animationProgress = 0;
                     }
 
@@ -38,6 +41,7 @@ var animator = {
                     if (inst.currentAnimation && inst.currentAnimation.interface.getDuration(inst.currentAnimation) < inst.animationProgress) {
                         if (inst.currentAnimation.params.looped.value === 0) {
                             inst.currentAnimation = undefined;
+                            inst.currentAnimationID = undefined;
                         }
                         inst.animationProgress = 0;
                     }

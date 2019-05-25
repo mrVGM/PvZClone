@@ -33,9 +33,8 @@ var hoverSite = {
                                         var animator = game.api.getComponent(pointed[i].gameObject, game.dev.animation.animator);
 
                                         var anim = inst.params.hoverAnimation.value;
-                                        anim = game.library[anim].scriptableObject.component.instance;
-
-                                        animator.interface.playAnimation(animator, anim);
+                                        if (animator.currentAnimationID !== anim)
+                                            animator.interface.playAnimation(animator, anim);
                                     }
                                     inst.hovered = pointed[i].gameObject;
                                     return crt;
