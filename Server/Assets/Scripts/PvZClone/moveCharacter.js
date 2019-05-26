@@ -23,16 +23,52 @@ var moveCharacter = {
             interface: {
                 coroutine: function (inst) {
                     var character = inst.params.character.gameObjectRef;
-                    var siteToGo = inst.context[inst.params.selectedSiteTag.value];
-                    if (!siteToGo) {
+                    var positionToGo = inst.context[inst.params.selectedSiteTag.value];
+                    var siteToGo = positionToGo;
+                    if (!positionToGo) {
                         return;
                     }
-                    siteToGo = game.api.getComponent(siteToGo.gameObject, game.dev.transform);
+                    positionToGo = game.api.getComponent(positionToGo.gameObject, game.dev.transform);
                     var m = game.api.math;
-                    siteToGo = siteToGo.interface.getWorldPosition(m.vector.create(0, 0));
+                    positionToGo = positionToGo.interface.getWorldPosition(m.vector.create(0, 0));
                     var characterTransform = game.api.getComponent(character, game.dev.transform);
 
-                    characterTransform.interface.setWorldPosition(siteToGo);
+                    var charComponent = game.api.getComponent(character, game.dev.character);
+                    var curSite = charComponent.interface.getSite(charComponent);
+
+                    var levelOffset = siteToGo.params.level.value - curSite.params.level.value;
+
+                    if (levelOffset === 0) {
+                        return;
+                    }
+
+                    if (Math.abs(levelOffset) > 1) {
+                        characterTransform.interface.setWorldPosition(positionToGo);
+                        return;
+                    }
+
+                    var animProgress = 0;
+                    var curve = curSite.params.pathForward.gameObjectRef;
+                    if (levelOffset < 0) {
+                        curve = curSite.params.pathBackwards.gameObjectRef;
+                    }
+                    curve = game.api.getComponent(curve, game.dev.bezierCurve);
+
+                    var animation = game.library[inst.params.moveAnimation.value].scriptableObject;
+                    animation = animation.component.instance;
+                    var animDuration = animation.interface.getDuration(animation);
+
+                    function crt() {
+                        if (animProgress > animDuration) {
+                            return;
+                        }
+                        var t = animProgress / animDuration;
+                        var pos = curve.interface.getPosition(curve, t);
+                        characterTransform.interface.setWorldPosition(pos);
+                        ++animProgress;
+                        return crt;
+                    }
+                    return crt;
                 }
             }
         };
