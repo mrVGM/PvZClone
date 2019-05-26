@@ -54,6 +54,26 @@ var math = {
             res = m.vector.add(m.vector.multiply(res.x, x), m.vector.multiply(res.y, y));
             return res;
         },
+        inverseTransform: function (component, vector) {
+            var m = math.math;
+
+            res = vector;
+            var rot = -component.params.rotation.value;
+            rot = 2 * Math.PI * rot / 360.0;
+
+            var x = m.vector.create(Math.cos(-rot), Math.sin(-rot));
+            var y = m.vector.perp(x);
+
+            res = m.vector.add(m.vector.multiply(res.x, x), m.vector.multiply(res.y, y));
+
+            var scale = m.vector.create(1 / component.params.scaleX.value, 1 / component.params.scaleY.value);
+            res = m.vector.create(res.x * scale.x, res.y * scale.y);
+
+            var offset = m.vector.create(component.params.x.value, component.params.y.value);
+            res = m.vector.subtract(res, offset);
+
+            return res;
+        }
     },
 };
 

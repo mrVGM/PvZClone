@@ -68,6 +68,25 @@ var transform = {
 
                     return res;
                 },
+                setWorldPosition: function (p) {
+                    var transforms = [];
+                    var curGo = instance.gameObject.parent;
+
+                    while (curGo) {
+                        var tr = game.api.getComponent(curGo, game.dev.transform);
+                        if (curGo) {
+                            transforms.unshift(tr);
+                        }
+                        curGo = curGo.parent;
+                    }
+                    var res = p;
+                    var m = game.api.math;
+                    for (var i = 0; i < transforms.length; ++i) {
+                        res = m.inverseTransform(transforms[i], res);
+                    }
+                    instance.params.x.value = res.x;
+                    instance.params.y.value = res.y;
+                }
             }
         };
         return instance;

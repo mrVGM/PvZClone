@@ -38,8 +38,15 @@ var hoverSite = {
                                     if (!inst.hovered) {
                                         var animator = game.api.getComponent(pointed[i].gameObject, game.dev.animation.animator);
 
+                                        var site = game.api.getComponent(pointed[i].gameObject, game.dev.site);
+                                        var selectedSite = inst.context[inst.params.selectedSiteTag.value];
+
+                                        var isCurrentSelected = false;
+                                        if (selectedSite && selectedSite.params.level === site.params.level)
+                                            isCurrentSelected = true;
+                                        
                                         var anim = inst.params.hoverAnimation.value;
-                                        if (animator.currentAnimationID !== anim)
+                                        if (!isCurrentSelected && animator.currentAnimationID !== anim)
                                             animator.interface.playAnimation(animator, anim);
                                     }
                                     inst.hovered = pointed[i].gameObject;
@@ -48,7 +55,7 @@ var hoverSite = {
                                         inst.mouseDown = true;
                                     }
                                     if (inst.mouseDown && !game.input.mouseDown) {
-                                        inst.context[inst.params.selectedSiteTag] = game.api.getComponent(inst.hovered, game.dev.site);
+                                        inst.context[inst.params.selectedSiteTag.value] = game.api.getComponent(inst.hovered, game.dev.site);
                                         return undefined;
                                     }
 
