@@ -1,6 +1,7 @@
 var bezierCurve = {
     createInstance: function () {
         var inst = {
+            name: 'Bezier curve',
             params: {
                 controlPoints: {
                     name: 'Control Points',
