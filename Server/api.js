@@ -310,6 +310,26 @@ canvas.addEventListener('mouseup', function (e) {
     game.inputEvents.push(e);
 });
 
+game.api.getAllComponentsIn = function (go, component) {
+    var res = [];
+    var comp = game.api.getComponent(go, component);
+    if (comp)
+        res = [comp];
+    for (var i = 0; i < go.children.length; ++i) {
+        res = res.concat(game.api.getAllComponentsIn(go.children[i], component));
+    }
+    return res;
+};
+
+game.api.getAllComponents = function (component) {
+    var res = [];
+    var liveObjects = game.api.baseStructures.liveObjects;
+    for (var i = 0; i < liveObjects.length; ++i) {
+        res = res.concat(game.api.getAllComponentsIn(liveObjects[i], component));
+    }
+    return res;
+};
+
 canvas.addEventListener('mousemove', function (e) {
     game.input.mousePos = game.api.math.vector.create(e.offsetX, e.offsetY);
 });
