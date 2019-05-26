@@ -38,6 +38,7 @@ var pointer = {
                                 }
                             }
                             inst.interface.dispatchEvent(inst, inst.params.pointedTargetsTag.value, pointed);
+                            //console.log(game.api.lastFrame, 'point events dispatched', pointed);
                         }
                         return crt;
                     }

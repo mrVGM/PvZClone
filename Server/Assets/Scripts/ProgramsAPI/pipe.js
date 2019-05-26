@@ -9,18 +9,23 @@ var program = {
                     var curProgramIndex = 0;
                     var children = inst.gameObject.children;
                     var curProgram = undefined;
+
+                    curProgram = game.api.getComponent(children[curProgramIndex], game.dev.programs.program);
+                    game.api.startProgram(curProgram, inst.context);
+
                     function crt() {
-                        while (curProgramIndex < children.length) {
-                            if (!curProgram) {
-                                curProgram = game.api.getComponent(children[curProgramIndex].gameObject, game.dev.program);
-                                game.api.startProgram(curProgram, inst.context);
-                            }
-                            if (!curProgram.finished) {
-                                return crt;
-                            }
-                            ++curProgramIndex;
-                            curProgram = undefined;
+                        if (!curProgram.finished) {
+                            return crt;
                         }
+
+                        ++curProgramIndex;
+                        if (curProgramIndex === children.length)
+                            return undefined;
+
+                        curProgram = game.api.getComponent(children[curProgramIndex], game.dev.programs.program);
+                        game.api.startProgram(curProgram, inst.context);
+
+                        return crt;
                     }
                     return crt;
                 },
@@ -28,7 +33,7 @@ var program = {
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
-                        var subProg = game.api.getComponent(children[i], game.dev.program);
+                        var subProg = game.api.getComponent(children[i], game.dev.programs.program);
                         subProg.stop = true;
                         subPrograms.push(subProg);
                     }

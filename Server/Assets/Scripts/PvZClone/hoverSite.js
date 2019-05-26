@@ -4,6 +4,7 @@ var hoverSite = {
         var inst = {
             name: 'Hover Site',
             hovered: undefined,
+            mouseDown: false,
             params: {
                 pointedTargetsTag: {
                     name: 'PointedTargetsTag',
@@ -12,6 +13,11 @@ var hoverSite = {
                 },
                 siteTag: {
                     name: 'Site Tag',
+                    type: 'fileObject',
+                    value: undefined
+                },
+                selectedSiteTag: {
+                    name: 'Selected Site Tag',
                     type: 'fileObject',
                     value: undefined
                 },
@@ -37,6 +43,15 @@ var hoverSite = {
                                             animator.interface.playAnimation(animator, anim);
                                     }
                                     inst.hovered = pointed[i].gameObject;
+
+                                    if (game.input.mouseDown) {
+                                        inst.mouseDown = true;
+                                    }
+                                    if (inst.mouseDown && !game.input.mouseDown) {
+                                        inst.context[inst.params.selectedSiteTag] = game.api.getComponent(inst.hovered, game.dev.site);
+                                        return undefined;
+                                    }
+
                                     return crt;
                                 }
                             }
@@ -45,10 +60,8 @@ var hoverSite = {
                     return crt;
                 },
                 finish: function (inst) {
-                    if (!inst.hovered)
-                        return;
-
                     inst.hovered = undefined;
+                    inst.mouseDown = false;
                 }
             }
         };

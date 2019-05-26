@@ -5,6 +5,7 @@ var programStarter = {
             program.context = context;
             program.started = true;
             program.finished = false;
+            program.stop = false;
 
             function findBrain(go) {
                 var comp = game.api.getComponent(go, game.dev.programs.brain);

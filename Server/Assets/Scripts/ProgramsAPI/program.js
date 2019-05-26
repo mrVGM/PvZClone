@@ -7,6 +7,7 @@ var program = {
         var inst = {
             name: 'Program',
             stop: false,
+            started: false,
             finished: false,
             subscribers: {},
             events: {},
@@ -56,10 +57,9 @@ var program = {
                         permanentStop = true;
                         if (f) {
                             f = f();
-                            if (!f) {
-                                inst.finished = true;
-                            }
-                            inst.events = {};
+                        } 
+                        inst.events = {};
+                        if (f) {
                             return crt;
                         }
                         inst.finished = true;
