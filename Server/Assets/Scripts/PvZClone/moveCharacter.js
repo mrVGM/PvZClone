@@ -49,20 +49,26 @@ var moveCharacter = {
 
                     var animProgress = 0;
                     var curve = curSite.params.pathForward.gameObjectRef;
+                    var weightFunc = function (w) {
+                        return w;
+                    };
                     if (levelOffset < 0) {
                         curve = curSite.params.pathBackwards.gameObjectRef;
+                        weightFunc = function (w) {
+                            return 1 - w;
+                        };
                     }
                     curve = game.api.getComponent(curve, game.dev.bezierCurve);
 
                     var animation = game.library[inst.params.moveAnimation.value].scriptableObject;
                     animation = animation.component.instance;
                     var animDuration = animation.interface.getDuration(animation);
-
+                    
                     function crt() {
                         if (animProgress > animDuration) {
                             return;
                         }
-                        var t = animProgress / animDuration;
+                        var t = weightFunc(animProgress / animDuration);
                         var pos = curve.interface.getPosition(curve, t);
                         characterTransform.interface.setWorldPosition(pos);
                         ++animProgress;
