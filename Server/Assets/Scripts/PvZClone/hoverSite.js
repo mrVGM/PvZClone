@@ -28,47 +28,59 @@ var hoverSite = {
                 }
             },
             interface: {
-                coroutine: function (inst) {
-                    function crt() {
-                        var pointed = inst.events[inst.params.pointedTargetsTag.value];
-                        if (pointed) {
-                            for (var i = 0; i < pointed.length; ++i) {
-                                var pointerTarget = game.api.getComponent(pointed[i].gameObject, game.dev.pointerTarget);
-                                if (pointerTarget && pointerTarget.params.targetType.value === inst.params.siteTag.value) {
-                                    if (!inst.hovered) {
-                                        var animator = game.api.getComponent(pointed[i].gameObject, game.dev.animation.animator);
-
-                                        var site = game.api.getComponent(pointed[i].gameObject, game.dev.site);
-                                        var selectedSite = inst.context[inst.params.selectedSiteTag.value];
-
-                                        var isCurrentSelected = false;
-                                        if (selectedSite && selectedSite.params.level === site.params.level)
-                                            isCurrentSelected = true;
-                                        
-                                        var anim = inst.params.hoverAnimation.value;
-                                        if (!isCurrentSelected && animator.currentAnimationID !== anim)
-                                            animator.interface.playAnimation(animator, anim);
-                                    }
-                                    inst.hovered = pointed[i].gameObject;
-
-                                    if (game.input.mouseDown) {
-                                        inst.mouseDown = true;
-                                    }
-                                    if (inst.mouseDown && !game.input.mouseDown) {
-                                        inst.context[inst.params.selectedSiteTag.value] = game.api.getComponent(inst.hovered, game.dev.site);
-                                        return undefined;
-                                    }
-
-                                    return crt;
-                                }
+                coroutine: function* (inst) {
+                    function getPointedTarget(pointed, targetType) {
+                        if (!pointed) {
+                            return undefined;
+                        }
+                        for (var i = 0; i < pointed.length; ++i) {
+                            var pointerTarget = game.api.getComponent(pointed[i].gameObject, game.dev.pointerTarget);
+                            if (pointerTarget && pointerTarget.params.targetType.value === targetType) {
+                                return pointerTarget;
                             }
                         }
                     }
-                    return crt;
+
+                    while (true) {
+                        var pointed = inst.events[inst.params.pointedTargetsTag.value];
+                        var pointerTarget = getPointedTarget(pointed, inst.params.siteTag.value)
+                        if (!pointerTarget) {
+                            return;
+                        }
+                        
+                        if (!inst.hovered) {
+                            var animator = game.api.getComponent(pointerTarget.gameObject, game.dev.animation.animator);
+
+                            var site = game.api.getComponent(pointerTarget.gameObject, game.dev.site);
+                            var selectedSite = inst.context[inst.params.selectedSiteTag.value];
+
+                            var isCurrentSelected = false;
+                            if (selectedSite && selectedSite.params.level === site.params.level)
+                                isCurrentSelected = true;
+                            
+                            var anim = inst.params.hoverAnimation.value;
+                            if (!isCurrentSelected && animator.currentAnimationID !== anim) {
+                                animator.interface.playAnimation(animator, anim);
+                            }
+                        }
+
+                        inst.hovered = pointerTarget.gameObject;
+
+                        if (game.input.mouseDown) {
+                            inst.mouseDown = true;
+                        }
+                        if (inst.mouseDown && !game.input.mouseDown) {
+                            inst.context[inst.params.selectedSiteTag.value] = game.api.getComponent(inst.hovered, game.dev.site);
+                            return;
+                        }
+
+                        yield undefined;
+                    }
                 },
-                finish: function (inst) {
+                finish: function* (inst) {
                     inst.hovered = undefined;
                     inst.mouseDown = false;
+                    return;
                 }
             }
         };

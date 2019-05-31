@@ -14,9 +14,7 @@ var brain = {
                 update: function (inst, dt) {
                     var tmp = inst.coroutines;
                     inst.coroutines = [];
-                    for (var i = 0; i < inst.coroutines.length; ++i) {
-                        tmp.push(inst.coroutines[i]);
-                    }
+                    
                     for (var i = 0; i < tmp.length - 1; ++i) {
                         for (var j = i + 1; j < tmp.length; ++j) {
                             if (tmp[j].updateTime < tmp[i].updateTime) {
@@ -27,9 +25,9 @@ var brain = {
                         }
                     }
                     for (var i = 0; i < tmp.length; ++i) {
-                        var next = tmp[i].crt();
-                        if (next) {
-                            inst.interface.addCoroutine(inst, { updateTime: tmp[i].updateTime, crt: next });
+                        var res = tmp[i].crt.next();
+                        if (!res.done) {
+                            inst.interface.addCoroutine(inst, { updateTime: tmp[i].updateTime, crt: tmp[i].crt });
                         }
                     }
                 }

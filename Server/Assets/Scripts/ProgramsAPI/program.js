@@ -39,32 +39,25 @@ var program = {
                 }
             },
             interface: {
-                coroutine: function (inst) { },
-                finish: function (inst) { },
-                createCoroutine: function (inst) {
+                coroutine: function* (inst) { },
+                finish: function* (inst) { },
+                createCoroutine: function* (inst) {
                     var c = inst.interface.coroutine(inst);
-                    var f = inst.interface.finish;
-                    var permanentStop = false;
-                    function crt() {
-                        if (!permanentStop && !inst.stop && c) {
-                            c = c();
-                            inst.events = {};
-                            return crt;
-                        }
-                        if (!permanentStop) {
-                            f = f(inst);
-                        }
-                        permanentStop = true;
-                        if (f) {
-                            f = f();
-                        } 
+                    var res = c.next();
+                    while (!res.done && !inst.stop) {
                         inst.events = {};
-                        if (f) {
-                            return crt;
-                        }
-                        inst.finished = true;
+                        yield undefined;
+                        res = c.next();
                     }
-                    return crt;
+                    var f = inst.interface.finish(inst);
+                    res = f.next();
+                    while (!res.done) {
+                        inst.events = {};
+                        yield undefined;
+                        res = f.next();
+                    }
+                    inst.events = {};
+                    inst.finished = true;
                 },
                 start: function (inst) {
                     for (var i = 0; i < inst.params.subscribeTo.value.length; ++i) {

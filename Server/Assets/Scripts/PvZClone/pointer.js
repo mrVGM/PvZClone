@@ -11,7 +11,7 @@ var pointer = {
                 }
             },
             interface: {
-                coroutine: function (inst) {
+                coroutine: function* (inst) {
                     function findColliders(go) {
                         var res = [];
                         var col = game.api.getComponent(go, game.dev.collider);
@@ -23,7 +23,7 @@ var pointer = {
                         }
                         return res;
                     }
-                    function crt() {
+                    while (true) {
                         var liveObjects = game.api.baseStructures.liveObjects;
                         var cols = [];
                         for (var i = 0; i < liveObjects.length; ++i) {
@@ -40,9 +40,8 @@ var pointer = {
                             inst.interface.dispatchEvent(inst, inst.params.pointedTargetsTag.value, pointed);
                             //console.log(game.api.lastFrame, 'point events dispatched', pointed);
                         }
-                        return crt;
+                        yield undefined;
                     }
-                    return crt;
                 },
             }
         };

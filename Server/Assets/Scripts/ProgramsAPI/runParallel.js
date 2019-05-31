@@ -15,7 +15,25 @@ var program = {
                 }
             },
             interface: {
-                coroutine: function (inst) {
+                coroutine: function* (inst) {
+                    function anyFinished(subprograms) {
+                        for (var i = 0; i < subprograms.length; ++i) {
+                            if (subprograms[i].finished) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    function allFinished(subprograms) {
+                        for (var i = 0; i < subprograms.length; ++i) {
+                            if (!subprograms[i].finished) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
@@ -23,27 +41,26 @@ var program = {
                         subPrograms.push(subProg);
                         game.api.startProgram(subProg, inst.context);
                     }
+                    
+                    var considered = [];
+                    for (var i = 0; i < inst.params.considerToEnd.value.length; ++i) {
+                        considered.push(inst.params.considerToEnd.value[i].gameObjectRef);
+                    }
 
-                    function crt() {
-                        for (var i = 0; i < subPrograms.length; ++i) {
-                            var cur = subPrograms[i];
-                            if (!cur.finished) {
-                                continue;
-                            }
-
-                            for (var j = 0; j < inst.params.considerToEnd.value.length; ++j) {
-                                var curConsidered = inst.params.considerToEnd.value[j];
-                                if (cur.gameObject.id === curConsidered.gameObjectRef.id) {
-                                    inst.stop = true;
-                                    break;
-                                }
+                    while (!anyFinished(considered) && !allFinished(subPrograms)) {
+                        yield undefined;
+                    }
+                },
+                finish: function* (inst) {
+                    function allFinished(subprograms) {
+                        for (var i = 0; i < subprograms.length; ++i) {
+                            if (!subprograms[i].finished) {
+                                return false;
                             }
                         }
-                        return crt;
+                        return true;
                     }
-                    return crt;
-                },
-                finish: function (inst) {
+
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
@@ -52,14 +69,9 @@ var program = {
                         subPrograms.push(subProg);
                     }
 
-                    function crt() {
-                        for (var i = 0; i < subPrograms.length; ++i) {
-                            if (subPrograms[i].started && !subPrograms[i].finished) {
-                                return crt;
-                            }
-                        }
+                    while (!allFinished(subPrograms)) {
+                        yield undefined;
                     }
-                    return crt;
                 },
             }
         };

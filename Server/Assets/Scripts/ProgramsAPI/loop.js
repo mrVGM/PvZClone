@@ -5,30 +5,31 @@ var program = {
             name: 'Loop',
             params: { },
             interface: {
-                coroutine: function (inst) {
+                coroutine: function* (inst) {
                     var childProgram = inst.gameObject.children[0];
                     childProgram = game.api.getComponent(childProgram, game.dev.programs.program);
                     game.api.startProgram(childProgram, inst.context);
+                    var startedAt = game.api.lastFrame;
 
-                    function crt() {
-                        if (childProgram.finished) {
-                            game.api.startProgram(childProgram, inst.context);
+                    while (true) {
+                        while (!childProgram.finished) {
+                            yield undefined;
                         }
-                        return crt;
+                        if (game.api.lastFrame === startedAt) {
+                            yield undefined;
+                        }
+                        game.api.startProgram(childProgram, inst.context);
+                        startedAt = game.api.lastFrame;
                     }
-                    return crt;
                 },
-                finish: function (inst) {
+                finish: function* (inst) {
                     var childProgram = inst.gameObject.children[0];
                     childProgram = game.api.getComponent(childProgram, game.dev.programs.program);
                     childProgram.stop = true;
 
-                    function crt() {
-                        if (!childProgram.finished) {
-                            return crt;
-                        }
+                    while(!childProgram.finished) {
+                        yield undefined;
                     }
-                    return crt;
                 },
             }
         };

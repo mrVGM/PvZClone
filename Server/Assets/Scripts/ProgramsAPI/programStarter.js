@@ -29,7 +29,8 @@ var programStarter = {
             }
             if (brain) {
                 var crt = program.interface.createCoroutine(program);
-                if (crt) {
+                var res = crt.next();
+                if (!res.done) {
                     brain.interface.addCoroutine(brain, { updateTime: program.params.updateTime, crt: crt });
                 }
             }

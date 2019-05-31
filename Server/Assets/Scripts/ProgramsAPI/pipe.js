@@ -5,31 +5,27 @@ var program = {
             name: 'Pipe',
             params: { },
             interface: {
-                coroutine: function (inst) {
-                    var curProgramIndex = 0;
+                coroutine: function* (inst) {
                     var children = inst.gameObject.children;
-                    var curProgram = undefined;
-
-                    curProgram = game.api.getComponent(children[curProgramIndex], game.dev.programs.program);
-                    game.api.startProgram(curProgram, inst.context);
-
-                    function crt() {
-                        if (!curProgram.finished) {
-                            return crt;
-                        }
-
-                        ++curProgramIndex;
-                        if (curProgramIndex === children.length)
-                            return undefined;
-
-                        curProgram = game.api.getComponent(children[curProgramIndex], game.dev.programs.program);
+                    
+                    for (var i = 0; i < children.length; ++i) {
+                        var curProgram = game.api.getComponent(children[i], game.dev.programs.program);
                         game.api.startProgram(curProgram, inst.context);
-
-                        return crt;
+                        while (!curProgram.finished) {
+                            yield undefined;
+                        }
                     }
-                    return crt;
                 },
-                finish: function (inst) {
+                finish: function* (inst) {
+                    function anyUnfinished(subPrograms) {
+                        for (var i = 0; i < subPrograms.length; ++i) {
+                            if (!subPrograms[i].finished) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
@@ -38,14 +34,9 @@ var program = {
                         subPrograms.push(subProg);
                     }
 
-                    function crt() {
-                        for (var i = 0; i < subPrograms.length; ++i) {
-                            if (subPrograms[i].started && !subPrograms[i].finished) {
-                                return crt;
-                            }
-                        }
+                    while (anyUnfinished(subPrograms)) {
+                        yield undefined;
                     }
-                    return crt;
                 },
             }
         };

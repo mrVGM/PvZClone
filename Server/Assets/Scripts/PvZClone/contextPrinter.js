@@ -4,7 +4,7 @@ var contextPrinter = {
         var inst = {
             name: 'Context printer',
             interface: {
-                coroutine: function (inst) {
+                coroutine: function* (inst) {
                     console.log(inst.context);
                 }
             }

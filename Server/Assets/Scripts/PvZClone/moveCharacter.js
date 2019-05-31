@@ -21,7 +21,7 @@ var moveCharacter = {
                 }
             },
             interface: {
-                coroutine: function (inst) {
+                coroutine: function* (inst) {
                     var character = inst.params.character.gameObjectRef;
                     var positionToGo = inst.context[inst.params.selectedSiteTag.value];
                     var siteToGo = positionToGo;
@@ -64,17 +64,13 @@ var moveCharacter = {
                     animation = animation.component.instance;
                     var animDuration = animation.interface.getDuration(animation);
                     
-                    function crt() {
-                        if (animProgress > animDuration) {
-                            return;
-                        }
+                    while (animProgress <= animDuration) {
                         var t = weightFunc(animProgress / animDuration);
                         var pos = curve.interface.getPosition(curve, t);
                         characterTransform.interface.setWorldPosition(pos);
                         ++animProgress;
-                        return crt;
+                        yield undefined;
                     }
-                    return crt;
                 }
             }
         };

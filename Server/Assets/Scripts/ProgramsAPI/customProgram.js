@@ -6,23 +6,15 @@ var customProgram = {
             stop: false,
             params: { },
             interface: {
-                coroutine: function (inst) {
-                    var cnt = 0;
-                    function crt() {
-                        console.log('From Custom:', cnt++);
-                        if (cnt < 20)
-                            return crt;
+                coroutine: function* (inst) {
+                    for (var i = 0; i < 20; ++i) {
+                        yield undefined;
                     }
-                    return crt;
                 },
-                finish: function (inst) {
-                    var cnt = 0;
-                    function crt() {
-                        console.log('From Custom:', cnt++);
-                        if (cnt < 20)
-                            return crt;
+                finish: function* (inst) {
+                    for (var i = 0; i < 20; ++i) {
+                        yield undefined;
                     }
-                    return crt;
                 },
             },
         };
