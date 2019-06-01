@@ -2,6 +2,7 @@ var hoverButton = {
     extendsFrom: 'Assets\\Scripts\\ProgramsAPI\\program.js',
     createInstance: function() {
         var inst = {
+            name: 'Hover Button',
             hovered: undefined,
             params: {
                 pointedTargetsTag: {
@@ -31,7 +32,7 @@ var hoverButton = {
 
                     while (true) {
                         var pointed = inst.events[inst.params.pointedTargetsTag.value];
-                        var pointerTarget = getPointedTarget(pointed, inst.params.siteTag.value)
+                        var pointerTarget = getPointedTarget(pointed, inst.params.startButtonTag.value)
                         if (!pointerTarget) {
                             return;
                         }
@@ -45,15 +46,18 @@ var hoverButton = {
                     }
                 },
                 finish: function* (inst) {
-                    var tr = game.api.getComponent(inst.hovered, game.dev.transform);
-                    tr.scaleX.value = 1.0;
-                    tr.scaleY.value = 1.0;
+                    if (!inst.hovered) {
+                        return;
+                    }
+                    var tr = game.api.getComponent(inst.hovered.gameObject, game.dev.transform);
+                    tr.params.scaleX.value = 1.0;
+                    tr.params.scaleY.value = 1.0;
                     inst.hovered = undefined;
                 }
             }
         };
         return inst;
-    };
+    }
 };
 
 module.exports = hoverButton;
