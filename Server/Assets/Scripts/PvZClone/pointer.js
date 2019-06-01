@@ -33,8 +33,13 @@ var pointer = {
                         if (mousePos) {
                             var pointed = [];
                             for (var i = 0; i < cols.length; ++i) {
-                                if (cols[i].interface.isInside(cols[i], mousePos)) {
-                                    pointed.push(cols[i]);
+                                var curCol = cols[i];
+                                var pointerTarget = game.api.getComponent(curCol.gameObject, game.dev.pointerTarget);
+                                if (!pointerTarget) {
+                                    continue;
+                                }
+                                if (curCol.interface.isInside(curCol, mousePos)) {
+                                    pointed.push(pointerTarget);
                                 }
                             }
                             inst.interface.dispatchEvent(inst, inst.params.pointedTargetsTag.value, pointed);

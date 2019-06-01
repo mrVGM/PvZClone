@@ -68,6 +68,44 @@ game.api.updateParams = function (fromScript, fromData) {
     }
 };
 
+game.api.destroy = function(go) {
+    function callOnDestroy(go) {
+        for (var i = 0; i < go.components.length; ++i) {
+            if (go.components[i].instance.interface.onDestroy) {
+                go.components[i].instance.interface.onDestroy(go.components[i].instance);
+            }
+        }
+        for (var i = 0; i < go.children.length; ++i) {
+            callOnDestroy(go.children[i]);
+        }
+    }
+
+    callOnDestroy(go);
+
+    var arrToExcludeFrom = game.api.baseStructures.liveObjects;
+    if (go.parent) {
+        arrToExcludeFrom = go.parent.children;
+    }
+    var index = -1;
+    for (var i = 0; i < arrToExcludeFrom.length; ++i) {
+        var curObj = arrToExcludeFrom[i];
+        if (curObj.id === go.id) {
+            index = i;
+            break;
+        }
+    }
+    if (index >= 0) {
+        arrToExcludeFrom.splice(index, 1);
+    }
+};
+
+game.api.destroyAllLiveObjects = function() {
+    var liveObjects = game.api.baseStructures.liveObjects;
+    for (var i = 0; i < liveObjects.length; ++i) {
+        game.api.destroy(liveObjects[i]);
+    }
+};
+
 game.api.instantiate = function (prefabStr, parent) {
     var prefab = JSON.parse(prefabStr);
 

@@ -44,7 +44,9 @@ var program = {
                     
                     var considered = [];
                     for (var i = 0; i < inst.params.considerToEnd.value.length; ++i) {
-                        considered.push(inst.params.considerToEnd.value[i].gameObjectRef);
+                        var program = inst.params.considerToEnd.value[i].gameObjectRef;
+                        program = game.api.getComponent(program, game.dev.programs.program);
+                        considered.push(program);
                     }
 
                     while (!anyFinished(considered) && !allFinished(subPrograms)) {
@@ -64,7 +66,7 @@ var program = {
                     var children = inst.gameObject.children;
                     var subPrograms = [];
                     for (var i = 0; i < children.length; ++i) {
-                        var subProg = game.api.getComponent(children[i], game.dev.program);
+                        var subProg = game.api.getComponent(children[i], game.dev.programs.program);
                         subProg.stop = true;
                         subPrograms.push(subProg);
                     }

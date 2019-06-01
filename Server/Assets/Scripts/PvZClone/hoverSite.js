@@ -29,33 +29,31 @@ var hoverSite = {
             },
             interface: {
                 coroutine: function* (inst) {
-                    function getPointedTarget(pointed, targetType) {
+                    function getPointedSite(pointed, targetType) {
                         if (!pointed) {
                             return undefined;
                         }
                         for (var i = 0; i < pointed.length; ++i) {
-                            var pointerTarget = game.api.getComponent(pointed[i].gameObject, game.dev.pointerTarget);
-                            if (pointerTarget && pointerTarget.params.targetType.value === targetType) {
-                                return pointerTarget;
+                            var curTarget = pointed[i];
+                            if (curTarget.params.targetType.value === targetType) {
+                                return game.api.getComponent(curTarget.gameObject, game.dev.site);
                             }
                         }
                     }
 
                     while (true) {
                         var pointed = inst.events[inst.params.pointedTargetsTag.value];
-                        var pointerTarget = getPointedTarget(pointed, inst.params.siteTag.value)
-                        if (!pointerTarget) {
+                        var pointedSite = getPointedSite(pointed, inst.params.siteTag.value)
+                        if (!pointedSite) {
                             return;
                         }
                         
                         if (!inst.hovered) {
-                            var animator = game.api.getComponent(pointerTarget.gameObject, game.dev.animation.animator);
-
-                            var site = game.api.getComponent(pointerTarget.gameObject, game.dev.site);
+                            var animator = game.api.getComponent(pointedSite.gameObject, game.dev.animation.animator);
                             var selectedSite = inst.context[inst.params.selectedSiteTag.value];
 
                             var isCurrentSelected = false;
-                            if (selectedSite && selectedSite.params.level === site.params.level)
+                            if (selectedSite && selectedSite.params.level === pointedSite.params.level)
                                 isCurrentSelected = true;
                             
                             var anim = inst.params.hoverAnimation.value;
@@ -64,16 +62,7 @@ var hoverSite = {
                             }
                         }
 
-                        inst.hovered = pointerTarget.gameObject;
-
-                        if (game.input.mouseDown) {
-                            inst.mouseDown = true;
-                        }
-                        if (inst.mouseDown && !game.input.mouseDown) {
-                            inst.context[inst.params.selectedSiteTag.value] = game.api.getComponent(inst.hovered, game.dev.site);
-                            return;
-                        }
-
+                        inst.hovered = pointedSite.gameObject;
                         yield undefined;
                     }
                 },
