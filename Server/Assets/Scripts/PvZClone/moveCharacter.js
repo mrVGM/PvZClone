@@ -9,6 +9,11 @@ var moveCharacter = {
                     type: 'gameObject',
                     value: undefined
                 },
+                uiToHide: {
+                    name: 'UI to hide',
+                    type: 'gameObject',
+                    value: undefined
+                },
                 selectedSiteTag: {
                     name: 'Selected site tag',
                     type: 'fileObject',
@@ -47,6 +52,9 @@ var moveCharacter = {
                         return;
                     }
 
+                    var uiToHideTransform = game.api.getComponent(inst.params.uiToHide.gameObjectRef, game.dev.transform);
+                    uiToHideTransform.params.x.value -= 1000;
+
                     var animProgress = 0;
                     var curve = curSite.params.pathForward.gameObjectRef;
                     var weightFunc = function (w) {
@@ -71,6 +79,8 @@ var moveCharacter = {
                         ++animProgress;
                         yield undefined;
                     }
+
+                    uiToHideTransform.params.x.value += 1000;
                 }
             }
         };
