@@ -101,7 +101,7 @@ var numberAnimation = {
                 },
                 getDuration: function (inst) {
                     var res = inst.params.keys.value[inst.params.keys.value.length - 1];
-                    res = res.value.keyNumber.value;
+                    res = res.value.keyNumber.value + 1;
                     return res;
                 }
             }

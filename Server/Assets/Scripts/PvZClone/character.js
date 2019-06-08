@@ -5,7 +5,13 @@ var character = {
     createInstance: function () {
         var inst = {
             name: 'Character',
-            params: {},
+            params: {
+                defaultAnimation: {
+                    name: 'Default Animation',
+                    type: 'fileObject',
+                    value: undefined
+                }
+            },
             interface: {
                 getSite: function (inst) {
                     var colliders = game.api.getAllComponents(game.dev.collider);
@@ -25,6 +31,10 @@ var character = {
                             return game.api.getComponent(cur.gameObject, game.dev.site);
                         }
                     }
+                },
+                start: function(inst) {
+                    var animator = game.api.getComponent(inst.gameObject, game.dev.animation.animator);
+                    animator.interface.playAnimation(animator, inst.params.defaultAnimation.value);
                 }
             },
         };
