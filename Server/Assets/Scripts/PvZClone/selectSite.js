@@ -37,7 +37,7 @@ var selectSite = {
                         }
                         var pointedTargets = inst.events[inst.params.pointedObjectsTag.value];
                         var pointedSite = getPointedSite(pointedTargets, inst.params.levelSiteTag.value);
-                        if (!pointedSite) {
+                        if (!pointedSite || game.api.baseStructures.saveGame.levelCompleted + 1 < pointedSite.params.level.value) {
                             yield undefined;
                             continue;
                         }

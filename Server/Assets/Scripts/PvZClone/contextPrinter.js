@@ -5,7 +5,7 @@ var contextPrinter = {
             name: 'Context printer',
             interface: {
                 coroutine: function* (inst) {
-                    console.log(inst.context);
+                    game.api.baseStructures.saveGame.programsContext = inst.context;
                 }
             }
         };

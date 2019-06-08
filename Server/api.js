@@ -9,6 +9,9 @@ game.api.baseStructures = {
     canvas: canvas,
     context: canvas.getContext('2d'),
     liveObjects: [],
+    saveGame: {
+        levelCompleted: 0
+    },
 };
 
 game.api.updateParams = function (fromScript, fromData) {

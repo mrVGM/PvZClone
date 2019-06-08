@@ -1,19 +1,18 @@
-var levelStarter = {
+var startLevelFromDefinition = {
     extendsFrom: 'Assets\\Scripts\\ProgramsAPI\\program.js',
     createInstance: function() {
         var inst = {
-            name: 'Level Starter',
+            name: 'Start Level from Definition',
             params: {
-                selectedSiteTag: {
-                    name: "Selected Site Tag",
+                levelDefinition: {
+                    name: "Level Definition",
                     type: 'fileObject',
                     value: undefined
                 }
             },
             interface: {
                 coroutine: function* (inst) {
-                    var selectedSite = inst.context[inst.params.selectedSiteTag.value];
-                    var levelDefinition = selectedSite.params.levelDefinition.value;
+                    var levelDefinition = inst.params.levelDefinition.value;
                     levelDefinition = game.library[levelDefinition].scriptableObject;
                     levelDefinition = levelDefinition.component.instance;
 
@@ -30,4 +29,4 @@ var levelStarter = {
     }
 };
 
-module.exports = levelStarter;
+module.exports = startLevelFromDefinition;

@@ -47,6 +47,10 @@ var hoverSite = {
                         if (!pointedSite) {
                             return;
                         }
+
+                        if (game.api.baseStructures.saveGame.levelCompleted + 1 < pointedSite.params.level.value) {
+                            return;
+                        }
                         
                         if (!inst.hovered) {
                             var animator = game.api.getComponent(pointedSite.gameObject, game.dev.animation.animator);

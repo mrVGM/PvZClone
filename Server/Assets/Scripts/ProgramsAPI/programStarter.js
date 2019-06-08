@@ -55,7 +55,11 @@ var programStarter = {
                     if (!program) {
                         console.log('Program not found!');
                     }
-                    game.api.startProgram(program, {});
+                    var context = game.api.baseStructures.saveGame.programsContext;
+                    if (!context) {
+                        context = {};
+                    }
+                    game.api.startProgram(program, context);
                 }
             },
         };
