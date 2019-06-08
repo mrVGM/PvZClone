@@ -53,7 +53,7 @@ var moveCharacter = {
                     }
 
                     var uiToHideTransform = game.api.getComponent(inst.params.uiToHide.gameObjectRef, game.dev.transform);
-                    uiToHideTransform.params.x.value -= 1000;
+                    uiToHideTransform.params.x.value = -1000;
 
                     var animProgress = 0;
                     var curve = curSite.params.pathForward.gameObjectRef;
@@ -80,7 +80,9 @@ var moveCharacter = {
                         yield undefined;
                     }
 
-                    uiToHideTransform.params.x.value += 1000;
+                    uiToHideTransform.params.x.value = 0;
+
+                    game.api.baseStructures.saveGame.characterPosition = { x: characterTransform.params.x.value, y: characterTransform.params.y.value };
                 }
             }
         };

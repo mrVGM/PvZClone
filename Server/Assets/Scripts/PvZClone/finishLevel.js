@@ -13,9 +13,9 @@ var finishLevel = {
             interface: {
                 coroutine: function* (inst) {
                     if (inst.params.win.value === 1) {
-                        game.api.baseStructures.levelState = { result: 'won' };
+                        game.api.baseStructures.levelState.result = 'won';
                     } else {
-                        game.api.baseStructures.levelState = { result: 'lost' };
+                        game.api.baseStructures.levelState.result = 'lost';
                     }
                 }
             },

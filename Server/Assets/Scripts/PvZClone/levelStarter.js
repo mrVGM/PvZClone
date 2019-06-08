@@ -18,6 +18,9 @@ var levelStarter = {
                     levelDefinition = levelDefinition.component.instance;
 
                     game.api.destroyAllLiveObjects();
+
+                    game.api.baseStructures.levelState = { levelNumber: selectedSite.params.level.value, result: 'playing' };
+
                     for (var i = 0; i < levelDefinition.params.prefabsToLoad.value.length; ++i) {
                         var curPrefab = levelDefinition.params.prefabsToLoad.value[i].value;
                         var prefab = game.library[curPrefab];

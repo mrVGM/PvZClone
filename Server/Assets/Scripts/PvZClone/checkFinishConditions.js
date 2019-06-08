@@ -6,13 +6,15 @@ var checkFinishConditions = {
             params: {},
             interface: {
                 coroutine: function* (inst) {
-                    if (!game.api.baseStructures.levelState) {
-                        game.api.baseStructures.levelState =  { result: 'playing' };
-                    }
                     while (game.api.baseStructures.levelState.result === 'playing') {
                         yield undefined;
                     }
-                    console.log(game.api.baseStructures.levelState.result);
+
+                    if (game.api.baseStructures.levelState.result === 'won') {
+                        if (game.api.baseStructures.saveGame.levelCompleted < game.api.baseStructures.levelState.levelNumber) {
+                            game.api.baseStructures.saveGame.levelCompleted = game.api.baseStructures.levelState.levelNumber;
+                        }
+                    }
                     game.api.baseStructures.levelState = undefined;
                 }
             },
