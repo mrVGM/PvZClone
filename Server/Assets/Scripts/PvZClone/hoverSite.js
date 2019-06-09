@@ -6,6 +6,11 @@ var hoverSite = {
             hovered: undefined,
             mouseDown: false,
             params: {
+                character: {
+                    name: 'Character',
+                    type: 'gameObject',
+                    value: undefined
+                },
                 pointedTargetsTag: {
                     name: 'PointedTargetsTag',
                     type: 'fileObject',
@@ -13,11 +18,6 @@ var hoverSite = {
                 },
                 siteTag: {
                     name: 'Site Tag',
-                    type: 'fileObject',
-                    value: undefined
-                },
-                selectedSiteTag: {
-                    name: 'Selected Site Tag',
                     type: 'fileObject',
                     value: undefined
                 },
@@ -54,10 +54,13 @@ var hoverSite = {
                         
                         if (!inst.hovered) {
                             var animator = game.api.getComponent(pointedSite.gameObject, game.dev.animation.animator);
-                            var selectedSite = inst.context[inst.params.selectedSiteTag.value];
+                            
+                            var character = inst.params.character.gameObjectRef;
+                            character = game.api.getComponent(character, game.dev.character);
+                            var curSite = character.interface.getSite(character);
 
                             var isCurrentSelected = false;
-                            if (selectedSite && selectedSite.params.level === pointedSite.params.level)
+                            if (curSite.params.level.value === pointedSite.params.level.value)
                                 isCurrentSelected = true;
                             
                             var anim = inst.params.hoverAnimation.value;
