@@ -81,7 +81,10 @@ var moveCharacter = {
                     }
 
                     uiToHideTransform.params.x.value = 0;
-
+                },
+                finish: function*(inst) {
+                    var character = inst.params.character.gameObjectRef;
+                    var characterTransform = game.api.getComponent(character, game.dev.transform);
                     game.api.baseStructures.saveGame.characterPosition = { x: characterTransform.params.x.value, y: characterTransform.params.y.value };
                 }
             }
