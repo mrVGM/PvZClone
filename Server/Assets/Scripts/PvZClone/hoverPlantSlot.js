@@ -15,6 +15,11 @@ var hoverPlantSlot = {
                     type: 'fileObject',
                     value: undefined
                 },
+                selectedPlantSlotTag: {
+                    name: 'Selected Plant Slot Tag',
+                    type: 'fileObject',
+                    value: undefined
+                }
             },
             interface: {
                 coroutine: function* (inst) {
@@ -37,6 +42,10 @@ var hoverPlantSlot = {
                             return;
                         }
                         var plantSlot = game.api.getComponent(pointerTarget.gameObject, game.dev.plantSlot);
+                        var curSelected = inst.context[inst.params.selectedPlantSlotTag.value];
+                        if (curSelected && curSelected.gameObject.id === plantSlot.gameObject.id) {
+                            return;
+                        }
                         if (!plantSlot.interface.canSelect(plantSlot)) {
                             return;
                         }
