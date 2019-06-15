@@ -9,6 +9,21 @@ var forwardMove = {
                     type: 'fileObject',
                     value: undefined
                 },
+                abilityAnimation: {
+                    name: 'Ability Animation',
+                    type: 'fileObject',
+                    value: undefined
+                },
+                idleAnimation: {
+                    name: 'Idle Animation',
+                    type: 'fileObject',
+                    value: undefined
+                },
+                animator: {
+                    name: 'Animator',
+                    type: 'gameObject',
+                    value: undefined
+                },
                 dirX: {
                     name: 'Dir X',
                     type: 'number',
@@ -35,8 +50,19 @@ var forwardMove = {
                     var m = game.api.math;
                     var moving = false;
                     while (true) {
+                        var command = undefined;
                         if (typeof inst.events[inst.params.activateMovingTag.value] !== 'undefined') {
-                            moving = inst.events[inst.params.activateMovingTag.value];
+                            command = inst.events[inst.params.activateMovingTag.value];
+                        }
+                        if (command && moving != command) {
+                            var animator = inst.params.animator.gameObjectRef;
+                            animator = game.api.getComponent(animator, game.dev.animation.animator);
+                            if (command) {
+                                animator.interface.playAnimation(animator, inst.params.abilityAnimation.value);
+                            } else {
+                                animator.interface.playAnimation(animator, inst.params.idleAnimation.value);
+                            }
+                            moving = command;
                         }
                         if (moving) {
                             var tr = inst.params.moveTransform.gameObjectRef;

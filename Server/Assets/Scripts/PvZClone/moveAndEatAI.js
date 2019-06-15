@@ -9,16 +9,6 @@ var forwardMove = {
                     type: 'fileObject',
                     value: undefined
                 },
-                actorAnimator: {
-                    name: 'Actor animator',
-                    type: 'gameObject',
-                    value: undefined
-                },
-                moveAnimation: {
-                    name: 'Move Animation',
-                    type: 'fileObject',
-                    value: undefined
-                },
                 waitTime: {
                     name: 'Wait Time',
                     type: 'number',
@@ -30,10 +20,6 @@ var forwardMove = {
                     for (var i = 0; i < inst.params.waitTime.value; ++i) {
                         yield undefined;
                     }
-                    
-                    var animator = inst.params.actorAnimator.gameObjectRef;
-                    animator = game.api.getComponent(animator, game.dev.animation.animator);
-                    animator.interface.playAnimation(animator, inst.params.moveAnimation.value);
                     inst.interface.dispatchEvent(inst, inst.params.activateMovingTag.value, true);
                 }
             },
