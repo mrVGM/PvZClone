@@ -19,7 +19,7 @@ var program = {
                 finish: function* (inst) {
                     function anyUnfinished(subPrograms) {
                         for (var i = 0; i < subPrograms.length; ++i) {
-                            if (!subPrograms[i].finished) {
+                            if (subPrograms[i].started && !subPrograms[i].finished) {
                                 return true;
                             }
                         }

@@ -1,9 +1,16 @@
 var deployTile = {
+    onLoad: function() {
+        game.dev.deployTile = deployTile;
+    },
     createInstance: function() {
         var inst = {
             name: 'Deploy Tile',
             params: {},
-            interface: {}
+            interface: {
+                canDeploy: function(inst) {
+                    return true;
+                }
+            }
         };
         return inst;
     }

@@ -9,6 +9,18 @@ var animator = {
             currentAnimationID: undefined,
             animationProgress: 0,
             toChange: undefined,
+            params: {
+                defaultAnimation: {
+                    name: 'Default Animation',
+                    type: 'fileObject',
+                    value: undefined
+                },
+                playAnimationAtStart: {
+                    name: 'Play Animation at Start',
+                    type: 'number',
+                    value: 0
+                }
+            },
             interface: {
                 playAnimation: function (inst, animation) {
                     inst.toChange = animation;
@@ -76,6 +88,11 @@ var animator = {
                         anim = game.library[anim].scriptableObject.component.instance;
                         param.value = anim.interface.getValue(anim, inst.animationProgress++);
 
+                    }
+                },
+                start: function(inst) {
+                    if (inst.params.playAnimationAtStart.value === 1) {
+                        inst.interface.playAnimation(inst, inst.params.defaultAnimation.value);
                     }
                 }
             }
