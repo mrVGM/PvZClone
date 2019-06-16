@@ -8,7 +8,7 @@ var deployTile = {
             params: {},
             interface: {
                 canDeploy: function(inst) {
-                    return true;
+                    return inst.gameObject.children.length === 0;
                 }
             }
         };
