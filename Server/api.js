@@ -109,6 +109,11 @@ game.api.destroyAllLiveObjects = function() {
     }
 };
 
+game.api.guid = 1;
+game.api.getGuid = function() {
+    return game.api.guid++;
+}
+
 game.api.instantiate = function (prefabStr, parent) {
     var prefab = JSON.parse(prefabStr);
 
@@ -181,6 +186,15 @@ game.api.instantiate = function (prefabStr, parent) {
     setParent(prefab, parent);
     processComponents(prefab);
 
+    function setUniqueIds(go) {
+        go.id = game.api.getGuid();
+        for (var i = 0; i < go.children.length; ++i) {
+            setUniqueIds(go.children[i]);
+        }
+    }
+
+    setUniqueIds(prefab);
+    
     if (parent) {
         parent.children.push(prefab);
     }

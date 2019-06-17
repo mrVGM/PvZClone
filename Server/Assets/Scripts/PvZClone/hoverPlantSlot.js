@@ -49,6 +49,9 @@ var hoverPlantSlot = {
                         if (!plantSlot.interface.canSelect(plantSlot)) {
                             return;
                         }
+                        if (inst.hovered && inst.hovered.gameObject.id !== pointerTarget.gameObject.id) {
+                            return;
+                        }
                         if (!inst.hovered) {
                             inst.hovered = pointerTarget;
                             var tr = game.api.getComponent(pointerTarget.gameObject, game.dev.transform);
