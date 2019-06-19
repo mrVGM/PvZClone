@@ -5,6 +5,11 @@ var actor = {
     createInstance: function() {
         var inst = {
             params: {
+                health: {
+                    name: 'Health',
+                    type: 'number',
+                    value: 100,
+                },
                 animator: {
                     name: 'Animator',
                     type: 'gameObject',

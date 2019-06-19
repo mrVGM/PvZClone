@@ -1,4 +1,7 @@
 var programPlayer = {
+    onLoad: function() {
+        game.dev.programs.programPlayer = programPlayer;
+    },
     extendsFrom: 'Assets\\Scripts\\ProgramsAPI\\program.js',
     createInstance: function() {
         var inst = {

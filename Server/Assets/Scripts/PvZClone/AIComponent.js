@@ -10,6 +10,11 @@ var forwardMove = {
                     type: 'fileObject',
                     value: undefined
                 },
+                player: {
+                    name: 'Player',
+                    type: 'gameObject',
+                    value: undefined
+                },
                 abilities: {
                     name: 'Abilities',
                     type: 'array',
@@ -21,15 +26,33 @@ var forwardMove = {
                 }
             },
             interface: {
+                chooseAbility: function(inst) {
+                    var player = inst.params.player.gameObjectRef;
+                    player = game.api.getComponent(player, game.dev.programs.programPlayer);
+                    for (var i = 0; i < inst.params.abilities.value.length; ++i) {
+                        var id = inst.params.abilities.value[i].value;
+                        var cur = game.library[id].scriptableObject.component.instance;
+                        if (cur.interface.isEnabled(cur, player)) {
+                            return { scriptableObject: cur, id: id };
+                        }
+                    }
+                },
                 coroutine: function* (inst) {
                     if (!inst.selectedAbility) {
-                        inst.selectedAbility = inst.params.abilities.value[0].value;
-                        inst.selectedAbility = game.library[inst.selectedAbility].scriptableObject.component.instance;
-                        inst.context[inst.params.selectedAbilityTag.value] = inst.selectedAbility;
+                        yield;
+                        var tmp = inst.interface.chooseAbility(inst);
+                        inst.selectedAbility = tmp.id;
+                        inst.context[inst.params.selectedAbilityTag.value] = tmp.scriptableObject;
                         return;
                     }
                     while (true) {
                         yield;
+                        var tmp = inst.interface.chooseAbility(inst);
+                        if (inst.selectedAbility !== tmp.id) {
+                            inst.selectedAbility = tmp.id;
+                            inst.context[inst.params.selectedAbilityTag.value] = tmp.scriptableObject;
+                            return;
+                        }
                     }
                 }
             },
