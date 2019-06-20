@@ -62,6 +62,16 @@ var eatPlant = {
                 },
                 coroutine: function* (inst, playerInst) {
                     var col = inst.interface.enemyCollider(inst, playerInst);
+
+                    if (col) {
+                        var actor = playerInst.context[inst.params.actorTag.value];
+                        actor = game.api.getComponent(actor, game.dev.actor);
+                        
+                        var animator = actor.params.animator.gameObjectRef;
+                        animator = game.api.getComponent(animator, game.dev.animation.animator);
+                        animator.interface.playAnimation(animator, inst.params.abilityAnimation.value);
+                    }
+                    
                     while (col) {
                         var proxy = game.api.getComponent(col.gameObject, game.dev.proxy);
                         var actor = game.api.getComponent(proxy.params.gameObject.gameObjectRef, game.dev.actor);
