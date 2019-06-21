@@ -86,9 +86,25 @@ var animator = {
                         }
                         var anim = curProp.value.propertyAnimation.value;
                         anim = game.library[anim].scriptableObject.component.instance;
-                        param.value = anim.interface.getValue(anim, inst.animationProgress++);
-
+                        param.value = anim.interface.getValue(anim, inst.animationProgress);
                     }
+
+                    if (inst.currentAnimation && inst.currentAnimation.params.events.value.script.value) {
+                        var eventReceiverComponent = inst.currentAnimation.params.events.value.script.value;
+                        eventReceiverComponent = game.library[eventReceiverComponent];
+                        eventReceiverComponent = game.api.getComponent(inst.gameObject, eventReceiverComponent);
+
+                        if (eventReceiverComponent) {
+                            for (var i = 0; i < inst.currentAnimation.params.events.value.eventsToRaise.value.length; ++i) {
+                                var cur = inst.currentAnimation.params.events.value.eventsToRaise.value[i].value;
+                                if (cur.keyNumber.value === inst.animationProgress) {
+                                    eventReceiverComponent.interface.addEvent(eventReceiverComponent, cur.data.value);
+                                }
+                            }
+                        }
+                    }
+
+                    ++inst.animationProgress;
                 },
                 start: function(inst) {
                     if (inst.params.playAnimationAtStart.value === 1) {

@@ -37,6 +37,37 @@ var animation = {
                             }
                         }
                     }
+                },
+                events: {
+                    name: 'Events',
+                    type: 'custom',
+                    value: {
+                        script: {
+                            name: 'Script',
+                            type: 'fileObject',
+                            value: undefined
+                        },
+                        eventsToRaise: {
+                            name: 'Events To Raise',
+                            type: 'array',
+                            value: [],
+                            defaultElement: {
+                                type: 'custom',
+                                value: {
+                                    keyNumber: {
+                                        name: 'Key Number',
+                                        type: 'number',
+                                        value: 0
+                                    },
+                                    data: {
+                                        name: 'Data',
+                                        type: 'fileObject',
+                                        value: undefined
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             interface: {
