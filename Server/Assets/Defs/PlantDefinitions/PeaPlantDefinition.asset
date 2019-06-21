@@ -1,0 +1,1 @@
+{"component":{"script":289,"instance":{"name":"Plant Definition","params":{"plantPrefab":{"name":"Plant Prefab","type":"fileObject","value":457},"plantAvatarImage":{"name":"Plant Avatar Image","type":"fileObject","value":372},"framesToLoad":{"name":"Frames To Load","type":"number","value":1500},"sunCost":{"name":"Sun Cost","type":"number","value":100}},"interface":{}}}}
