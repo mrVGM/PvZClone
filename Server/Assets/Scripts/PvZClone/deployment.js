@@ -40,6 +40,8 @@ var deployment = {
                     }
                 },
                 coroutine: function*(inst) {
+                    yield;
+                    
                     inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, true);
 
                     var initFrame = game.api.lastFrame;

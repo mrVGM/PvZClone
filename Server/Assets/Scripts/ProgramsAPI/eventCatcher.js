@@ -29,7 +29,7 @@ var eventCatcher = {
             interface: {
                 coroutine: function*(inst) {
                     var brain = findBrain();
-                    brain.eventEmitters.push(inst);
+                    brain.eventCatchers.push(inst);
 
                     while (true) {
                         for (var prop in inst.events) {
@@ -49,7 +49,7 @@ var eventCatcher = {
                         }
                     }
                     if (ind >= 0) {
-                        brain.eventEmitters.splice(ind, 1);
+                        brain.eventCatchers.splice(ind, 1);
                     }
                 }
             }
