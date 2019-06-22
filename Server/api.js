@@ -103,7 +103,7 @@ game.api.destroy = function(go) {
 };
 
 game.api.destroyAllLiveObjects = function() {
-    var liveObjects = game.api.baseStructures.liveObjects;
+    var liveObjects = [].concat(game.api.baseStructures.liveObjects);
     for (var i = 0; i < liveObjects.length; ++i) {
         game.api.destroy(liveObjects[i]);
     }
@@ -226,6 +226,7 @@ game.api.instantiate = function (prefabStr, parent) {
         }
     }
     executeStart(prefab);
+    return prefab;
 };
 
 game.api.lastTick = undefined;
