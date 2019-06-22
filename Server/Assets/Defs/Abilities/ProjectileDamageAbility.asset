@@ -1,0 +1,1 @@
+{"component":{"script":503,"instance":{"name":"Eat Plant","params":{"actorTag":{"name":"Actor Tag","type":"fileObject","value":348},"componentScript":{"name":"Component Script","type":"fileObject","value":358},"enemyColliderTag":{"name":"Eat Tag","type":"fileObject","value":492},"damage":{"name":"Damage per Frame","type":"number","value":30}},"interface":{}}}}
