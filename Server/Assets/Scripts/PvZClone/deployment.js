@@ -1,4 +1,5 @@
 var deployment = {
+    extendsFrom: 'Assets\\Scripts\\ProgramsAPI\\program.js',
     createInstance: function() {
         var inst = {
             name: 'Deployment',
@@ -23,23 +24,45 @@ var deployment = {
                             }
                         }
                     }
+                },
+                deployingTag: {
+                    name: 'DeployingTag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
-                update: function(inst) {
-                    var frame = game.api.lastFrame - inst.initFrame;
+                getDeploymentForFrame: function(inst, frame) {
                     for (var i = 0; i < inst.params.spawnData.value.length; ++i) {
-                        var cur = inst.params.spawnData.value[i].value;
-                        if (cur.spawnFrame.value === frame) {
-                            var prefab = cur.actorPrefab.value;
-                            prefab = game.library[prefab];
-                            game.api.instantiate(prefab.prefabStr, inst.gameObject);
+                        if (frame === inst.params.spawnData.value[i].value.spawnFrame.value) {
+                            return inst.params.spawnData.value[i].value;
                         }
                     }
                 },
-                start: function(inst) {
-                    inst.initFrame = game.api.lastFrame;
-                }
+                coroutine: function*(inst) {
+                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, true);
+
+                    var initFrame = game.api.lastFrame;
+                    var latest = 0;
+                    for (var i = 0; i < inst.params.spawnData.value.length; ++i) {
+                        if (latest < inst.params.spawnData.value[i].value.spawnFrame.value) {
+                            latest = inst.params.spawnData.value[i].value.spawnFrame.value;
+                        }
+                    }
+
+                    while (game.api.lastFrame - initFrame <= latest) {
+                        var depl = inst.interface.getDeploymentForFrame(inst, game.api.lastFrame - initFrame);
+                        if (depl) {
+                            var prefab = depl.actorPrefab.value;
+                            prefab = game.library[prefab];
+                            game.api.instantiate(prefab.prefabStr, inst.gameObject);
+                        }
+                        yield;
+                    }
+                },
+                finish: function*(inst) { 
+                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, false);
+                },
             }
         };
         return inst;

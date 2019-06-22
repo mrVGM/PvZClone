@@ -7,6 +7,8 @@ var brain = {
             name: 'Brain',
             params: {},
             coroutines: [],
+            eventEmitters: [],
+            eventCatchers: [],
             interface: {
                 addCoroutine: function (inst, c) {
                     inst.coroutines.push(c);
