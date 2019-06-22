@@ -4,6 +4,7 @@ var actor = {
     },
     createInstance: function() {
         var inst = {
+            name: 'Actor',
             params: {
                 health: {
                     name: 'Health',

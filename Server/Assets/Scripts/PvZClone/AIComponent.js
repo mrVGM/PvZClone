@@ -36,6 +36,7 @@ var forwardMove = {
                             return { scriptableObject: cur, id: id };
                         }
                     }
+                    return undefined;
                 },
                 coroutine: function* (inst) {
                     if (!inst.selectedAbility) {

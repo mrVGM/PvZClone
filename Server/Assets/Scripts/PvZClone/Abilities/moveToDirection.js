@@ -15,8 +15,12 @@ var forwardMove = {
                 },
                 notWalkableTag: {
                     name: 'Not walkable',
-                    type: 'fileObject',
-                    value: undefined
+                    type: 'array',
+                    value: [],
+                    defaultElement: {
+                        type: 'fileObject',
+                        value: undefined
+                    }
                 },
                 abilityAnimation: {
                     name: 'Ability Animation',
@@ -41,6 +45,10 @@ var forwardMove = {
             },
             interface: {
                 isEnabled: function(inst, playerInst) {
+                    if (inst.params.notWalkableTag.value.length === 0) {
+                        return true;
+                    }
+
                     var actor = playerInst.context[inst.params.actorTag.value];
                     actor = game.api.getComponent(actor, game.dev.actor);
                     var componentScript = inst.params.componentScript.value;
@@ -56,9 +64,21 @@ var forwardMove = {
                     var cols = game.api.getAllComponents(game.dev.collider);
                     for (var i = 0; i < cols.length; ++i) {
                         var taggedComponent = game.api.getComponent(cols[i].gameObject, game.dev.taggedComponent);
-                        if (!taggedComponent || taggedComponent.params.tag.value !== inst.params.notWalkableTag.value) {
+                        if (!taggedComponent) {
                             continue;
                         }
+                        var notWalkable = false;
+                        for (var j = 0; j < inst.params.notWalkableTag.value.length; ++j) {
+                            var curTag = inst.params.notWalkableTag.value[j].value;
+                            if (taggedComponent.params.tag.value === curTag) {
+                                notWalkable = true;
+                                break;
+                            }
+                        }
+                        if (!notWalkable) {
+                            continue;
+                        }
+                        
                         if (cols[i].interface.isInside(cols[i], front.interface.getWorldPosition({x: 0, y: 0}))) {
                             return false;
                         }

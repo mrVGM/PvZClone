@@ -38,7 +38,7 @@ var beatPlayer = {
                             game.api.baseStructures.levelState.result = 'lost';
                             return;
                         }
-                        yield undefined;
+                        yield;
                     }
                 }
             },
