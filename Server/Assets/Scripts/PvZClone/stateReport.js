@@ -27,12 +27,14 @@ var stateReport = {
             },
             interface: {
                 coroutine: function*(inst) {
+                    yield;
                     var eventData = { 
                         number: inst.params.number.value,
                         gameObject: inst.params.gameObject.value,
                         fileObject: inst.params.fileObject.value
                     };
                     inst.interface.dispatchEvent(inst, inst.params.eventTag.value, eventData);
+                    yield;
                 }
             }
         };

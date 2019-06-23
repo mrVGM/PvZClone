@@ -7,11 +7,17 @@ var enemiesLeft = {
                 deployingTag: {
                     name: 'Deploying Tag',
                     type: 'fileObject',
-                    value: 0
+                    value: undefined
+                },
+                lifeStateTag: {
+                    name: 'LifeState Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
                 recvEvents: [],
+                recvEventsLifeState: [],
                 isDeploymentDone: function(inst) {
                     if (inst.interface.recvEvents.length === 0) {
                         return false;
@@ -19,6 +25,16 @@ var enemiesLeft = {
                     var sum = 0;
                     for (var i = 0; i < inst.interface.recvEvents.length; ++i) {
                         sum += inst.interface.recvEvents[i];
+                    }
+                    return sum === 0;
+                },
+                areEnemiesDead: function(inst) {
+                    if (inst.interface.recvEventsLifeState.length === 0) {
+                        return false;
+                    }
+                    var sum = 0;
+                    for (var i = 0; i < inst.interface.recvEventsLifeState.length; ++i) {
+                        sum += inst.interface.recvEventsLifeState[i].number;
                     }
                     return sum === 0;
                 },
@@ -32,8 +48,17 @@ var enemiesLeft = {
                                 inst.interface.recvEvents.push(inst.events[inst.params.deployingTag.value]);
                             }
                         }
-                        if (inst.interface.isDeploymentDone(inst)) {
-                            console.log('Deployment done');
+                        if (typeof inst.events[inst.params.lifeStateTag.value] !== 'undefined') {
+                            if (Array.isArray(inst.events[inst.params.lifeStateTag.value])) {
+                                inst.interface.recvEventsLifeState = inst.interface.recvEventsLifeState.concat(inst.events[inst.params.lifeStateTag.value]);
+                            }
+                            else {
+                                inst.interface.recvEventsLifeState.push(inst.events[inst.params.lifeStateTag.value]);
+                            }
+                        }
+                        if (inst.interface.isDeploymentDone(inst) && inst.interface.areEnemiesDead(inst)) {
+                            game.api.baseStructures.levelState.result = 'won';
+                            return;
                         }
                         yield;
                     }
