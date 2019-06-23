@@ -34,7 +34,7 @@ var eventEmitter = {
                     while (true) {
                         for (var prop in inst.events) {
                             for (var j = 0; j < brain.eventCatchers.length; ++j) {
-                                brain.eventCatchers[j].events[prop] = inst.events[prop];
+                                inst.interface.dispatchEventToProgram(inst, prop, inst.events[prop], brain.eventCatchers[j]);
                             }
                         }
                         yield;

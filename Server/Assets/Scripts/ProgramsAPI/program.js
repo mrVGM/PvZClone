@@ -69,6 +69,12 @@ var program = {
                         program.subscribers[cur.value.tag.value].push(inst);
                     }
                 },
+                receiveEvent: function(inst, tag, data) {
+                    inst.events[tag] = data;
+                },
+                dispatchEventToProgram: function(inst, tag, data, program) {
+                    program.interface.receiveEvent(program, tag, data);
+                },
                 dispatchEvent: function (inst, tag, data) {
                     var subscribedPrograms = inst.subscribers[tag];
 
@@ -77,7 +83,7 @@ var program = {
 
                     for (var i = 0; i < subscribedPrograms.length; ++i) {
                         var cur = subscribedPrograms[i];
-                        cur.events[tag] = data;
+                        inst.interface.dispatchEventToProgram(inst, tag, data, cur);
                     }
                 }
             },

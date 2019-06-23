@@ -41,8 +41,8 @@ var deployment = {
                 },
                 coroutine: function*(inst) {
                     yield;
-                    
-                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, true);
+
+                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, 1);
 
                     var initFrame = game.api.lastFrame;
                     var latest = 0;
@@ -62,8 +62,9 @@ var deployment = {
                         yield;
                     }
                 },
-                finish: function*(inst) { 
-                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, false);
+                finish: function*(inst) {
+                    yield;
+                    inst.interface.dispatchEvent(inst, inst.params.deployingTag.value, -1);
                 },
             }
         };

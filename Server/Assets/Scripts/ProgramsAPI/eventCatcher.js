@@ -51,6 +51,12 @@ var eventCatcher = {
                     if (ind >= 0) {
                         brain.eventCatchers.splice(ind, 1);
                     }
+                },
+                receiveEvent: function(inst, tag, data) {
+                    if (typeof inst.events[tag] === 'undefined') {
+                        inst.events[tag] = [];
+                    }
+                    inst.events[tag].push(data);
                 }
             }
         };
