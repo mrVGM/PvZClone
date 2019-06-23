@@ -69,23 +69,25 @@ var shootAbility = {
                     animator.interface.playAnimation(animator, inst.params.abilityAnimation.value);
                     playerInst.context[inst.params.lastShootTag.value] = game.api.lastFrame;
 
-                    while (true) {
-                        var events = playerInst.events[inst.params.animationEventsTag.value];
-                        if (!events) {
-                            yield;
-                            continue;
-                        }
-                        var shootEventReceived = false;
-                        for (var i = 0; i < events.length; ++i) {
-                            if (events[i] === inst.params.shootTag.value) {
-                                shootEventReceived = true;
+                    if (inst.params.shootTag.value) {
+                        while (true) {
+                            var events = playerInst.events[inst.params.animationEventsTag.value];
+                            if (!events) {
+                                yield;
+                                continue;
+                            }
+                            var shootEventReceived = false;
+                            for (var i = 0; i < events.length; ++i) {
+                                if (events[i] === inst.params.shootTag.value) {
+                                    shootEventReceived = true;
+                                    break;
+                                }
+                            }
+                            if (shootEventReceived) {
                                 break;
                             }
+                            yield;
                         }
-                        if (shootEventReceived) {
-                            break;
-                        }
-                        yield;
                     }
 
                     var shootPointTr = component.params.shootTransform.gameObjectRef;
