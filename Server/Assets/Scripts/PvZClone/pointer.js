@@ -8,9 +8,46 @@ var pointer = {
                     name: 'Pointed Targets Tag:',
                     type: 'fileObject',
                     value: undefined
+                },
+                pointerTargetOrder: {
+                    name: 'Pointer Target Order',
+                    type: 'array',
+                    value: [],
+                    defaultElement: {
+                        type: 'fileObject',
+                        value: undefined
+                    }
                 }
             },
             interface: {
+                sortPointed: function(inst, pointed) {
+                    function comp(x, y) {
+                        var typeX = x.params.targetType.value;
+                        var typeY = y.params.targetType.value;
+
+                        var indX = inst.params.pointerTargetOrder.value.length;
+                        var indY = inst.params.pointerTargetOrder.value.length;
+
+                        for (var i = 0; i < inst.params.pointerTargetOrder.value.length; ++i) {
+                            if (inst.params.pointerTargetOrder.value[i].value === typeX) {
+                                indX = i;
+                            }
+                            if (inst.params.pointerTargetOrder.value[i].value === typeY) {
+                                indY = i;
+                            }
+                        }
+                        return indX - indY;
+                    }
+                    for (var i = 0; i < pointed.length - 1; ++i) {
+                        for (var j = i + 1; j < pointed.length; ++j) {
+                            if (comp(pointed[i], pointed[j]) > 0) {
+                                var tmp = pointed[i];
+                                pointed[i] = pointed[j];
+                                pointed[j] = tmp;
+                            }
+                        }
+                    }
+                },
                 coroutine: function* (inst) {
                     function findColliders(go) {
                         var res = [];
@@ -42,8 +79,18 @@ var pointer = {
                                     pointed.push(pointerTarget);
                                 }
                             }
+
+                            if (inst.params.pointerTargetOrder.value.length > 0 && pointed.length > 0) {
+                                inst.interface.sortPointed(inst, pointed);
+                                for (var i = 0; i < inst.params.pointerTargetOrder.value.length; ++i) {
+                                    if (inst.params.pointerTargetOrder.value[i].value === pointed[0].params.targetType.value) {
+                                        pointed = [pointed[0]];
+                                        break;
+                                    }
+                                }
+                            }
+
                             inst.interface.dispatchEvent(inst, inst.params.pointedTargetsTag.value, pointed);
-                            //console.log(game.api.lastFrame, 'point events dispatched', pointed);
                         }
                         yield undefined;
                     }
