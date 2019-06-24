@@ -13,6 +13,11 @@ var collectSun = {
                     name: 'Sun Pointer Target tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                collectedSunTag: {
+                    name: 'Collected Sun Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -42,8 +47,9 @@ var collectSun = {
                         }
                         pointedTargets = inst.events[inst.params.pointedObjectsTag.value];
                         var sunOnMouseUp = getPointedSun(pointedTargets, inst.params.sunPointerTargetTag.value);
+                        var proxy = game.api.getComponent(sunOnMouseUp.gameObject, game.dev.proxy);
                         if (sunOnMouseUp && sunOnMouseUp.gameObject.id === pointedSun.gameObject.id) {
-                            console.log('Sun Collected');
+                            inst.interface.dispatchEvent(inst, inst.params.collectedSunTag.value, proxy.params.gameObject.gameObjectRef);
                             return;
                         }
                     }
