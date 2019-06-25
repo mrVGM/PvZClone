@@ -18,6 +18,11 @@ var collectSun = {
                     name: 'Collected Sun Tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                sunStoreTag: {
+                    name: 'Sun Store Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -28,10 +33,13 @@ var collectSun = {
                         }
                         for (var i = 0; i < pointed.length; ++i) {
                             if (pointed[i].params.targetType.value === sunTag) {
-                                return pointed[i];
+                                var proxy = game.api.getComponent(pointed[i].gameObject, game.dev.proxy);
+                                var sun = game.api.getComponent(proxy.params.gameObject.gameObjectRef, game.dev.sun);
+                                return sun;
                             }
                         }
                     }
+                    var sunStore = inst.context[inst.params.sunStoreTag.value];
                     while (true) {
                         while (!game.input.mouseDown || game.input.mouseButton !== 0) {
                             yield undefined;
@@ -47,9 +55,9 @@ var collectSun = {
                         }
                         pointedTargets = inst.events[inst.params.pointedObjectsTag.value];
                         var sunOnMouseUp = getPointedSun(pointedTargets, inst.params.sunPointerTargetTag.value);
-                        var proxy = game.api.getComponent(sunOnMouseUp.gameObject, game.dev.proxy);
                         if (sunOnMouseUp && sunOnMouseUp.gameObject.id === pointedSun.gameObject.id) {
-                            inst.interface.dispatchEvent(inst, inst.params.collectedSunTag.value, proxy.params.gameObject.gameObjectRef);
+                            inst.interface.dispatchEvent(inst, inst.params.collectedSunTag.value, pointedSun.gameObject);
+                            sunStore.params.sunCollected.value += pointedSun.params.sunAmount.value;
                             return;
                         }
                     }

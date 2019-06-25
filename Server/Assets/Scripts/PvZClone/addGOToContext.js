@@ -13,11 +13,21 @@ var addGOToContext = {
                     name: 'Tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                component: {
+                    name: 'Component',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
                 coroutine: function* (inst) {
-                    inst.context[inst.params.tag.value] = inst.params.transform.gameObjectRef;
+                    var go = inst.params.transform.gameObjectRef;
+                    if (typeof inst.params.component.value !== 'undefined') {
+                        var script = game.scripts[inst.params.component.value];
+                        go = game.api.getComponent(go, script);
+                    }
+                    inst.context[inst.params.tag.value] = go;
                 }
             },
         };
