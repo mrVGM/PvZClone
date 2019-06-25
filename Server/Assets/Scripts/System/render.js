@@ -31,9 +31,25 @@ var render = {
                 render(go.children[i]);
             }
         }
+        function renderText(go) {
+            var textComponent = game.api.getComponent(go, game.dev.text);
+
+            if (textComponent) {
+                textComponent.interface.render(textComponent);
+            }
+
+            for (var i = 0; i < go.children.length; ++i) {
+                renderText(go.children[i]);
+            }
+        } 
+
         game.api.baseStructures.context.clearRect(0, 0, game.api.baseStructures.canvas.width, game.api.baseStructures.canvas.height);
+
         for (var i = 0; i < liveGameObjects.length; ++i) {
             render(liveGameObjects[i]);
+        }
+        for (var i = 0; i < liveGameObjects.length; ++i) {
+            renderText(liveGameObjects[i]);
         }
     }
 };

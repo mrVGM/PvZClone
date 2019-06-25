@@ -27,6 +27,11 @@ var viewportSettings = {
                     type: 'fileObject',
                     value: undefined,
                 },
+                textScript: {
+                    name: 'Text Script',
+                    type: 'fileObject',
+                    value: undefined
+                },
                 mathScript: {
                     name: 'Math Script',
                     type: 'fileObject',
