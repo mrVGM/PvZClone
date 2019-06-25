@@ -13,6 +13,11 @@ var deployPlant = {
                     name: 'Selected Plant Slot Tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                sunStoreTag: {
+                    name: 'Sun Store Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -21,9 +26,13 @@ var deployPlant = {
                     var selectedPlantSlot = inst.context[inst.params.selectedPlantSlotTag.value];
                     console.log(selectedDeployTile, selectedPlantSlot);
                     var plantData = selectedPlantSlot.params.plantData.value;
-                    plantData = game.library[plantData].scriptableObject;
-                    var plantPrefab = game.library[plantData.component.instance.params.plantPrefab.value];
+                    plantData = game.library[plantData].scriptableObject.component.instance;
+                    var plantPrefab = game.library[plantData.params.plantPrefab.value];
                     game.api.instantiate(plantPrefab.prefabStr, selectedDeployTile.gameObject);
+
+                    var plantCost = selectedPlantSlot.interface.getSunCost(selectedPlantSlot);
+                    var sunStore = inst.context[inst.params.sunStoreTag.value];
+                    sunStore.params.sunCollected.value -= plantCost;
 
                     selectedPlantSlot.lastSpawn = game.api.lastFrame;
 
