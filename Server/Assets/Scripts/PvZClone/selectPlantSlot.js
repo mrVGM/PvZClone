@@ -19,6 +19,11 @@ var selectPlantSlot = {
                     name: 'Selected Plant Slot Tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                sunStoreTag: {
+                    name: 'Sun Store Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -35,6 +40,7 @@ var selectPlantSlot = {
                         }
                     }
 
+                    var sunStore = inst.context[inst.params.sunStoreTag.value];
                     while (true) {
                         while (!game.input.mouseDown || game.input.mouseButton !== 0) {
                             yield undefined;
@@ -46,7 +52,7 @@ var selectPlantSlot = {
                         if (pointedTarget) {
                             pointedPlantSlot = game.api.getComponent(pointedTarget.gameObject, game.dev.plantSlot);
                         }
-                        if (!pointedPlantSlot || !pointedPlantSlot.interface.canSelect(pointedPlantSlot)) {
+                        if (!pointedPlantSlot || !pointedPlantSlot.interface.canSelect(pointedPlantSlot, sunStore.params.sunCollected.value)) {
                             yield undefined;
                             continue;
                         }

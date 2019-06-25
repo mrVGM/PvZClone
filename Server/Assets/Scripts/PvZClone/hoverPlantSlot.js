@@ -19,6 +19,11 @@ var hoverPlantSlot = {
                     name: 'Selected Plant Slot Tag',
                     type: 'fileObject',
                     value: undefined
+                },
+                sunStoreTag: {
+                    name: 'Sun Store Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -35,6 +40,7 @@ var hoverPlantSlot = {
                         }
                     }
 
+                    var sunStore = inst.context[inst.params.sunStoreTag.value];
                     while (true) {
                         var pointed = inst.events[inst.params.pointedTargetsTag.value];
                         var pointerTarget = getPointedTarget(pointed, inst.params.plantSlotTag.value)
@@ -46,7 +52,7 @@ var hoverPlantSlot = {
                         if (curSelected && curSelected.gameObject.id === plantSlot.gameObject.id) {
                             return;
                         }
-                        if (!plantSlot.interface.canSelect(plantSlot)) {
+                        if (!plantSlot.interface.canSelect(plantSlot, sunStore.params.sunCollected.value)) {
                             return;
                         }
                         if (inst.hovered && inst.hovered.gameObject.id !== pointerTarget.gameObject.id) {
