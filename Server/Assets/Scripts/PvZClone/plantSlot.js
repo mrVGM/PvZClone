@@ -21,6 +21,11 @@ var plantSlot = {
                     name: 'Curtain',
                     type: 'gameObject',
                     value: undefined
+                },
+                priceText: {
+                    name: 'Price Text',
+                    type: 'gameObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -31,6 +36,10 @@ var plantSlot = {
                     avatar.params.image.value = plantData.params.plantAvatarImage.value;
 
                     inst.lastSpawn = game.api.lastFrame;
+
+                    var priceText = inst.params.priceText.gameObjectRef;
+                    priceText = game.api.getComponent(priceText, game.dev.text);
+                    priceText.params.text.value = plantData.params.sunCost.value;
                 },
                 getPlantData: function(inst) {
                     return game.library[inst.params.plantData.value].scriptableObject.component.instance;

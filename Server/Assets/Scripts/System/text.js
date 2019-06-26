@@ -18,12 +18,12 @@ var text = {
                 width: {
                     name: 'Width',
                     type: 'number',
-                    value: 0
+                    value: 10
                 },
                 height: {
                     name: 'Height',
                     type: 'number',
-                    value: 0
+                    value: 10
                 }
             },
             interface: {
