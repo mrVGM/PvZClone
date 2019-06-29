@@ -16,6 +16,11 @@ var animator = {
                     name: 'Play Animation at Start',
                     type: 'number',
                     value: 0
+                },
+                animationEventsTag: {
+                    name: 'Animation Events Tag',
+                    type: 'fileObject',
+                    value: undefined
                 }
             },
             interface: {
@@ -92,23 +97,21 @@ var animator = {
                             param.value = anim.interface.getValue(anim, inst.interface.animationProgress);
                         }
 
-                        if (inst.interface.currentAnimation && inst.interface.currentAnimation.params.events.value.script.value) {
-                            var eventReceiverComponent = inst.interface.currentAnimation.params.events.value.script.value;
-                            eventReceiverComponent = game.library[eventReceiverComponent];
-                            eventReceiverComponent = game.api.getComponent(inst.gameObject, eventReceiverComponent);
-
-                            if (eventReceiverComponent) {
-                                for (var i = 0; i < inst.interface.currentAnimation.params.events.value.eventsToRaise.value.length; ++i) {
-                                    var cur = inst.interface.currentAnimation.params.events.value.eventsToRaise.value[i].value;
-                                    if (cur.keyNumber.value === inst.interface.animationProgress) {
-                                        eventReceiverComponent.interface.addEvent(eventReceiverComponent, cur.data.value);
-                                    }
+                        if (inst.params.animationEventsTag.value) {
+                            var curFrameEvents = [];
+                            for (var i = 0; i < inst.interface.currentAnimation.params.eventsToRaise.value.length; ++i) {
+                                var cur = inst.interface.currentAnimation.params.eventsToRaise.value[i].value;
+                                if (cur.keyNumber.value === inst.interface.animationProgress) {
+                                    curFrameEvents.push(cur.data.value);
                                 }
+                            }
+                            if (curFrameEvents.length > 0) {
+                                inst.interface.dispatchEvent(inst, inst.params.animationEventsTag.value, curFrameEvents);
                             }
                         }
 
-                        ++inst.interface.animationProgress;
                         yield;
+                        ++inst.interface.animationProgress;
                     }
                 },
                 start: function(inst) {
