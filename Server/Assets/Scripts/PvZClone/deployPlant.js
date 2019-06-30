@@ -28,7 +28,9 @@ var deployPlant = {
                     var plantData = selectedPlantSlot.params.plantData.value;
                     plantData = game.library[plantData].scriptableObject.component.instance;
                     var plantPrefab = game.library[plantData.params.plantPrefab.value];
-                    game.api.instantiate(plantPrefab.prefabStr, selectedDeployTile.gameObject);
+                    var plant = game.api.instantiate(plantPrefab.prefabStr, selectedDeployTile.gameObject);
+                    var actorComponent = game.api.getComponent(plant, game.dev.actor);
+                    actorComponent.params.lane.value = selectedDeployTile.params.lane.value;
 
                     var plantCost = selectedPlantSlot.interface.getSunCost(selectedPlantSlot);
                     var sunStore = inst.context[inst.params.sunStoreTag.value];

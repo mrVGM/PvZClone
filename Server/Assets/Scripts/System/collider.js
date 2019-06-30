@@ -18,6 +18,20 @@ var collider = {
                 }
             },
             interface: {
+                diag: function(inst) {
+                    var m = game.api.math;
+                    var corner = m.vector.create(-inst.params.width.value / 2.0, -inst.params.height.value / 2.0);
+                    var tr = game.api.getComponent(inst.gameObject, game.dev.transform);
+                    corner = tr.interface.getWorldPosition(corner);
+                    var center = inst.interface.center(inst);
+                    return m.vector.magnitude(m.vector.subtract(corner, center));
+                },
+                center: function(inst) {
+                    var m = game.api.math;
+                    var tr = game.api.getComponent(inst.gameObject, game.dev.transform);
+                    var center = tr.interface.getWorldPosition(m.vector.create(0,0));
+                    return center;
+                },
                 verteces: function (inst) {
                     var m = game.api.math;
                     var res = [
@@ -33,8 +47,15 @@ var collider = {
                     return res;
                 },
                 isInside: function (inst, p) {
-                    var verts = inst.interface.verteces(inst);
                     var m = game.api.math;
+                    var diag = inst.interface.diag(inst);
+                    var center = inst.interface.center(inst);
+
+                    if (m.vector.magnitude(m.vector.subtract(center, p)) >= diag) {
+                        return false;
+                    }
+
+                    var verts = inst.interface.verteces(inst);
 
                     var sides = [
                         m.vector.subtract(verts[1], verts[0]),

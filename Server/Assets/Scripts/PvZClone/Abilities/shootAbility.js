@@ -99,6 +99,11 @@ var shootAbility = {
                     prefab = game.api.instantiate(prefab.prefabStr);
                     var prefabTr = game.api.getComponent(prefab, game.dev.transform);
                     prefabTr.interface.setWorldPosition(shootPointPos);
+
+                    var prefabActor = game.api.getComponent(prefab, game.dev.actor);
+                    if (prefabActor) {
+                        prefabActor.params.lane.value = actor.params.lane.value;
+                    }
                 }
             },
         };

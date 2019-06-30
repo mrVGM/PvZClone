@@ -5,6 +5,11 @@ var deployment = {
             name: 'Deployment',
             initFrame: 0,
             params: {
+                lane: {
+                    name: 'Lane',
+                    type: 'number',
+                    value: 1
+                },
                 spawnData: {
                     name: 'Spawn Data',
                     type: 'array',
@@ -57,7 +62,9 @@ var deployment = {
                         if (depl) {
                             var prefab = depl.actorPrefab.value;
                             prefab = game.library[prefab];
-                            game.api.instantiate(prefab.prefabStr, inst.gameObject);
+                            var actor = game.api.instantiate(prefab.prefabStr, inst.gameObject);
+                            var actorComponent = game.api.getComponent(actor, game.dev.actor);
+                            actorComponent.params.lane.value = inst.params.lane.value;
                         }
                         yield;
                     }

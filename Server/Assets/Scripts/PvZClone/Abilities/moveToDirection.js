@@ -79,6 +79,15 @@ var forwardMove = {
                             continue;
                         }
                         
+                        var proxy = game.api.getComponent(cols[i].gameObject, game.dev.proxy);
+                        if (proxy) {
+                            var act = proxy.params.gameObject.gameObjectRef;
+                            act = game.api.getComponent(act, game.dev.actor);
+                            if (act && act.params.lane.value !== actor.params.lane.value) {
+                                continue;
+                            }
+                        }
+
                         if (cols[i].interface.isInside(cols[i], front.interface.getWorldPosition({x: 0, y: 0}))) {
                             return false;
                         }

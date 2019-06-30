@@ -16,6 +16,11 @@ var actor = {
                     type: 'gameObject',
                     value: undefined
                 },
+                lane: {
+                    name: 'Lane',
+                    type: 'number',
+                    value: 0
+                }
             },
             interface: {}
         };
