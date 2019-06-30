@@ -1,4 +1,5 @@
 var eatPlant = {
+    extendsFrom: "Assets\\Scripts\\PvZClone\\Abilities\\ability.js",
     createInstance: function() {
         var inst = {
             name: 'Projectile Damage Ability',
@@ -62,12 +63,14 @@ var eatPlant = {
                         }
                     }
                 },
-                isEnabled: function(inst, playerInst) {
-                    return !!inst.interface.enemyCollider(inst, playerInst);
+                isEnabledImpl: function(inst, playerInst, record) {
+                    var col = inst.interface.enemyCollider(inst, playerInst);
+                    record.collider = col;
+                    return !!col;
                 },
                 coroutine: function* (inst, playerInst) {
-                    var col = inst.interface.enemyCollider(inst, playerInst);
-
+                    var col = inst.interface.checks.recentChecks[playerInst.gameObject.id].collider;
+                    
                     var proxy = game.api.getComponent(col.gameObject, game.dev.proxy);
                     var actor = game.api.getComponent(proxy.params.gameObject.gameObjectRef, game.dev.actor);
                     actor.params.health.value -= inst.params.damage.value;

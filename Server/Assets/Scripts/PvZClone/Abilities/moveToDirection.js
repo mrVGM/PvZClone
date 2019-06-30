@@ -1,4 +1,5 @@
 var forwardMove = {
+    extendsFrom: "Assets\\Scripts\\PvZClone\\Abilities\\ability.js",
     createInstance: function() {
         var inst = {
             name: 'Move to Direction',
@@ -44,7 +45,7 @@ var forwardMove = {
                 },
             },
             interface: {
-                isEnabled: function(inst, playerInst) {
+                isEnabledImpl: function(inst, playerInst) {
                     if (inst.params.notWalkableTag.value.length === 0) {
                         return true;
                     }

@@ -1,4 +1,5 @@
 var eatPlant = {
+    extendsFrom: "Assets\\Scripts\\PvZClone\\Abilities\\ability.js",
     createInstance: function() {
         var inst = {
             name: 'Eat Plant',
@@ -67,11 +68,13 @@ var eatPlant = {
                         }
                     }
                 },
-                isEnabled: function(inst, playerInst) {
-                    return !!inst.interface.enemyCollider(inst, playerInst);
+                isEnabledImpl: function(inst, playerInst, record) {
+                    var col = inst.interface.enemyCollider(inst, playerInst);
+                    record.collider = col;
+                    return !!col;
                 },
                 coroutine: function* (inst, playerInst) {
-                    var col = inst.interface.enemyCollider(inst, playerInst);
+                    var col = inst.interface.checks.recentChecks[playerInst.gameObject.id].collider;
 
                     if (col) {
                         var actor = playerInst.context[inst.params.actorTag.value];

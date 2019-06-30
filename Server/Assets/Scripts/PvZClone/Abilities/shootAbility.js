@@ -1,4 +1,5 @@
 var shootAbility = {
+    extendsFrom: "Assets\\Scripts\\PvZClone\\Abilities\\ability.js",
     createInstance: function() {
         var inst = {
             name: 'Shoot Ability',
@@ -45,7 +46,7 @@ var shootAbility = {
                 }
             },
             interface: {
-                isEnabled: function(inst, playerInst) {
+                isEnabledImpl: function(inst, playerInst) {
                     var lastShoot = playerInst.context[inst.params.lastShootTag.value];
                     if (!lastShoot) {
                         return true;

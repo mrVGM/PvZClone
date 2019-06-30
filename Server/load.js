@@ -67,7 +67,7 @@ function onLoadLibrary(lib, callback) {
             curAsset.scriptableObject = JSON.parse(json);
             var script = curAsset.scriptableObject.component.script;
             script = game.scripts[script];
-            var inst = script.createInstance();
+            var inst = game.api.createInstance(script);
             game.api.updateParams(inst.params, curAsset.scriptableObject.component.instance.params);
             curAsset.scriptableObject.component.instance = inst;
 
