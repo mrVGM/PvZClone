@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="main.css">
     </head>
     <body>
-        <canvas width="800" height="600" id="canvas" style="user-select: none;" oncontextmenu="return false;"></canvas>
+        <div class="canvas-container">
+            <canvas class="center-screen" width="800" height="600" id="canvas" style="user-select: none;" oncontextmenu="return false;"></canvas>
+        </div>
         <script>
             var game = {
                 library: {},

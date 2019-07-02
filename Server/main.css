@@ -1,0 +1,13 @@
+.center-screen {
+    display: inline;
+}
+
+.bordered {
+    border: 1px;
+    border-style: solid;
+}
+
+.canvas-container {
+    width: 100%;
+    text-align: center;
+}
