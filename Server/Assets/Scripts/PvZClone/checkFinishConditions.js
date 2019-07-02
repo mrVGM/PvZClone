@@ -15,7 +15,6 @@ var checkFinishConditions = {
                             game.api.baseStructures.saveGame.levelCompleted = game.api.baseStructures.levelState.levelNumber;
                         }
                     }
-                    game.api.baseStructures.levelState = undefined;
                 }
             },
         };
